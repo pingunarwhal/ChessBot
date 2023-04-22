@@ -135,6 +135,24 @@ class Bot {
   /* check for repeated configs in the pastConfigs vector */
   bool checkRepeatedConfigs();
 
+  /* make coordinates into parsable move */
+  std::string getPosition(int x, int y);
+
+  /* generate possible moves with white pawn from specified coordinates */
+  std::vector<Move*> moveWhitePawn(int x, int y, std::vector<PlaySidePiece> &captured);
+
+  /* generate possible moves with black pawn from specified coordinates */
+  std::vector<Move*> moveBlackPawn(int x, int y, std::vector<PlaySidePiece> &captured);
+
+  /* generate possible moves with knight from specified coordinates */
+  std::vector<Move*> moveKnight(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured);
+
+  /* generate possible moves with king from specified coordinates */
+  std::vector<Move*> moveKing(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured);
+  std::vector<Move*> rook_moves(int x, int y, PlaySide side);
+  std::vector<Move*> bishop_moves(int x, int y, PlaySide side);
+  std::vector<Move*> queen_moves(int x, int y, PlaySide side);
+  
   static std::string getBotName();
 };
 #endif
