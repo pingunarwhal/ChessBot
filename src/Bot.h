@@ -151,9 +151,9 @@ class Bot {
 
   /* generate possible moves with king from specified coordinates */
   std::vector<Move*> moveKing(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured);
-  std::vector<Move*> rook_moves(int x, int y, PlaySide side);
-  std::vector<Move*> bishop_moves(int x, int y, PlaySide side);
-  std::vector<Move*> queen_moves(int x, int y, PlaySide side);
+  std::vector<MoveContext> rook_moves(int x, int y, PlaySide side);
+  std::vector<MoveContext> bishop_moves(int x, int y, PlaySide side);
+  std::vector<MoveContext> queen_moves(int x, int y, PlaySide side);
   
   static std::string getBotName();
 };
