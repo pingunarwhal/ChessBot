@@ -8,6 +8,8 @@
 #define TABLE_SIZE 8
 #define KNIGHT_MOVES 8
 
+class MoveContext;
+
 enum PlaySidePiece {
   WHITE_PAWN = 1, WHITE_ROOK = 2,
   WHITE_BISHOP = 3, WHITE_KNIGHT = 4,
@@ -139,10 +141,10 @@ class Bot {
   std::string getPosition(int x, int y);
 
   /* generate possible moves with white pawn from specified coordinates */
-  std::vector<Move*> moveWhitePawn(int x, int y, std::vector<PlaySidePiece> &captured);
+  std::vector<MoveContext> moveWhitePawn(int x, int y);
 
   /* generate possible moves with black pawn from specified coordinates */
-  std::vector<Move*> moveBlackPawn(int x, int y, std::vector<PlaySidePiece> &captured);
+  std::vector<MoveContext> moveBlackPawn(int x, int y);
 
   /* generate possible moves with knight from specified coordinates */
   std::vector<Move*> moveKnight(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured);
@@ -154,5 +156,16 @@ class Bot {
   std::vector<Move*> queen_moves(int x, int y, PlaySide side);
   
   static std::string getBotName();
+};
+
+class MoveContext {
+  public:
+    PlaySidePiece currentBoard[TABLE_SIZE + 1][TABLE_SIZE + 1];
+    Castling shortCastle; /* Short castling available */
+    Castling longCastle;
+    std::vector<PlaySidePiece> myCapturedPieces;
+    Move* actualMove;
+
+    MoveContext(Bot* bot, Move* move);
 };
 #endif
