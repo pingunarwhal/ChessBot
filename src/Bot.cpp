@@ -447,6 +447,397 @@ void Bot::recordMove(Move* move, PlaySide sideToMove) {
   copyCurrentConfig();
 }
 
+std::string Bot::getPosition(int x, int y) {
+  std::string position = "";
+  position += 'a' + y - 1;
+  position += '0' + x;
+
+  return position;
+}
+
+std::vector<Move*> Bot::moveWhitePawn(int x, int y, std::vector<PlaySidePiece> &captured) {
+  if (gameBoard[x][y] != WHITE_PAWN || gameBoard[x][y] != WHITE_EN_PAS) {
+    return std::vector<Move*>();
+  }
+
+  std::vector<Move*> possibleMoves;
+
+  /* become en passant */
+  if (x == 2 && gameBoard[x + 2][y] == NO_PIECE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 2, y)));
+    convertRegularPiece(x, y);
+  }
+
+  if (x == 7 && gameBoard[x + 1][y] == NO_PIECE) {
+    possibleMoves.push_back(Move::promote(getPosition(x, y), getPosition(x + 1, y), QUEEN));
+  }
+
+  if (gameBoard[x + 1][y] == NO_PIECE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y)));
+  }
+
+  if (gameBoard[x + 1][y + 1] < NO_PIECE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y + 1)));
+    captured.push_back(gameBoard[x + 1][y + 1]);
+  }
+
+  if (gameBoard[x + 1][y - 1] < NO_PIECE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
+    captured.push_back(gameBoard[x + 1][y - 1]);
+  }
+
+  if (gameBoard[x][y - 1] == BLACK_EN_PAS) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
+    captured.push_back(gameBoard[x][y - 1]);
+    gameBoard[x][y - 1] = NO_PIECE;
+  }
+
+  if (gameBoard[x][y + 1] == BLACK_EN_PAS) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y + 1)));
+    captured.push_back(gameBoard[x][y + 1]);
+    gameBoard[x][y + 1] = NO_PIECE;
+  }
+
+  return possibleMoves;
+}
+
+std::vector<Move*> Bot::moveBlackPawn(int x, int y, std::vector<PlaySidePiece> &captured) {
+  if (gameBoard[x][y] != BLACK_PAWN || gameBoard[x][y] != BLACK_EN_PAS) {
+    return std::vector<Move*>();
+  }
+
+  std::vector<Move*> possibleMoves;
+
+  /* become en passant */
+  if (x == 7 && gameBoard[x - 2][y] == NO_PIECE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 2, y)));
+    convertRegularPiece(x, y);
+  }
+
+  if (x == 2 && gameBoard[x - 1][y] == NO_PIECE) {
+    possibleMoves.push_back(Move::promote(getPosition(x, y), getPosition(x - 1, y), QUEEN));
+  }
+
+  if (gameBoard[x - 1][y] == NO_PIECE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y)));
+  }
+
+  if (gameBoard[x - 1][y + 1] > NO_PIECE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
+    captured.push_back(gameBoard[x - 1][y + 1]);
+  }
+
+  if (gameBoard[x - 1][y - 1] > NO_PIECE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
+    captured.push_back(gameBoard[x - 1][y - 1]);
+  }
+
+  if (gameBoard[x][y - 1] == WHITE_EN_PAS) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
+    captured.push_back(gameBoard[x][y - 1]);
+    gameBoard[x][y - 1] = NO_PIECE;
+  }
+
+  if (gameBoard[x][y + 1] == WHITE_EN_PAS) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
+    captured.push_back(gameBoard[x][y + 1]);
+    gameBoard[x][y + 1] = NO_PIECE;
+  }
+
+  return possibleMoves;
+}
+
+std::vector<Move*> Bot::moveKnight(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured) {
+  if ((side == WHITE && gameBoard[x][y] != WHITE_KNIGHT) || (side == BLACK && gameBoard[x][y] != BLACK_KNIGHT)) {
+    return std::vector<Move*>();
+  }
+
+  std::vector<Move*> possibleMoves;
+
+  if (x + 2 <= 8) {
+    if (y + 1 <= 8 && gameBoard[x + 2][y + 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 2, y + 1)));
+
+      if (gameBoard[x + 2][y + 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x + 2][y + 1]);
+      }
+    }
+
+    if (y - 1 >= 1 && gameBoard[x + 2][y - 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 2, y - 1)));
+
+      if (gameBoard[x + 2][y - 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x + 2][y - 1]);
+      }
+    }
+  }
+
+  if (x - 2 >= 1) {
+    if (y + 1 <= 8 && gameBoard[x - 2][y + 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 2, y + 1)));
+
+      if (gameBoard[x - 2][y + 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x - 2][y + 1]);
+      }
+    }
+
+    if (y - 1 >= 1 && gameBoard[x - 2][y - 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 2, y - 1)));
+
+      if (gameBoard[x - 2][y - 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x - 2][y - 1]);
+      }
+    }
+  }
+
+  return possibleMoves;
+}
+
+std::vector<Move*> Bot::moveKing(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured) {
+  if ((side == WHITE && gameBoard[x][y] != WHITE_KING) || (side == BLACK && gameBoard[x][y] != BLACK_KING)) {
+    return std::vector<Move*>();
+  }
+
+  std::vector<Move*> possibleMoves;
+
+  if (side == WHITE) {
+    if (x + 1 <= 8 && gameBoard[x + 1][y] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y)));
+
+      if (gameBoard[x + 1][y] < NO_PIECE) {
+        captured.push_back(gameBoard[x + 1][y]);
+      }
+    }
+
+    if (x - 1 >= 1 && gameBoard[x - 1][y] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y)));
+
+      if (gameBoard[x - 1][y] < NO_PIECE) {
+        captured.push_back(gameBoard[x - 1][y]);
+      }
+    }
+
+    if (y + 1 <= 8 && gameBoard[x][y + 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y + 1)));
+
+      if (gameBoard[x][y + 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x][y + 1]);
+      }
+    }
+
+    if (y - 1 >= 1 && gameBoard[x][y - 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y - 1)));
+
+      if (gameBoard[x][y - 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x][y - 1]);
+      }
+    }
+
+    if (x + 1 <= 8 && y + 1 <= 8 && gameBoard[x + 1][y + 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y + 1)));
+
+      if (gameBoard[x + 1][y + 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x + 1][y + 1]);
+      }
+    }
+
+    if (x + 1 <= 8 && y - 1 >= 1 && gameBoard[x + 1][y - 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
+
+      if (gameBoard[x + 1][y - 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x + 1][y - 1]);
+      }
+    }
+
+    if (x - 1 >= 1 && y + 1 <= 8 && gameBoard[x - 1][y + 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
+
+      if (gameBoard[x - 1][y + 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x - 1][y + 1]);
+      }
+    }
+
+    if (x - 1 >= 1 && y - 1 >= 1 && gameBoard[x - 1][y - 1] <= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
+
+      if (gameBoard[x - 1][y - 1] < NO_PIECE) {
+        captured.push_back(gameBoard[x - 1][y - 1]);
+      }
+    }
+  }
+
+  if (side == BLACK) {
+    if (x + 1 <= 8 && gameBoard[x + 1][y] >= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y)));
+
+      if (gameBoard[x + 1][y] > NO_PIECE) {
+        captured.push_back(gameBoard[x + 1][y]);
+      }
+    }
+
+    if (x - 1 >= 1 && gameBoard[x - 1][y] >= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y)));
+
+      if (gameBoard[x - 1][y] > NO_PIECE) {
+        captured.push_back(gameBoard[x - 1][y]);
+      }
+    }
+
+    if (y + 1 <= 8 && gameBoard[x][y + 1] >= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y + 1)));
+
+      if (gameBoard[x][y + 1] > NO_PIECE) {
+        captured.push_back(gameBoard[x][y + 1]);
+      }
+    }
+
+    if (y - 1 >= 1 && gameBoard[x][y - 1] >= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y - 1)));
+
+      if (gameBoard[x][y - 1] > NO_PIECE) {
+        captured.push_back(gameBoard[x][y - 1]);
+      }
+    }
+
+    if (x + 1 <= 8 && y + 1 <= 8 && gameBoard[x + 1][y + 1] >= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y + 1)));
+
+      if (gameBoard[x + 1][y + 1] > NO_PIECE) {
+        captured.push_back(gameBoard[x + 1][y + 1]);
+      }
+    }
+
+    if (x + 1 <= 8 && y - 1 >= 1 && gameBoard[x + 1][y - 1] >= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
+
+      if (gameBoard[x + 1][y - 1] > NO_PIECE) {
+        captured.push_back(gameBoard[x + 1][y - 1]);
+      }
+    }
+
+    if (x - 1 >= 1 && y + 1 <= 8 && gameBoard[x - 1][y + 1] >= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
+
+      if (gameBoard[x - 1][y + 1] > NO_PIECE) {
+        captured.push_back(gameBoard[x - 1][y + 1]);
+      }
+    }
+
+    if (x - 1 >= 1 && y - 1 >= 1 && gameBoard[x - 1][y - 1] >= NO_PIECE) {
+      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
+
+      if (gameBoard[x - 1][y - 1] > NO_PIECE) {
+        captured.push_back(gameBoard[x - 1][y - 1]);
+      }
+    }
+  }
+
+  if (shortCastle == CAN_CASTLE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y + 2)));
+  }
+
+  if (longCastle == CAN_CASTLE) {
+    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y - 2)));
+  }
+
+  return possibleMoves;
+}
+
+std::vector<Move*> Bot::rook_moves(int x, int y, PlaySide side)
+{
+  std::vector<Move*> moves;
+  bool turn = false;
+  auto valid_move = turn ? [](char c){return c < 0;} : [](char c){ return c > 0;};
+  for (int i = x + 1; i < TABLE_SIZE; ++i) { //right
+    if (gameBoard[i][y] != NO_PIECE && valid_move(gameBoard[i][y])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, y)));
+      break;
+    } else if (valid_move(gameBoard[i][y])){
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, y)));
+    }
+  }
+
+  for (int i = x - 1; i >=0; i--) { //left
+    if (gameBoard[i][y] != NO_PIECE && valid_move(gameBoard[i][y])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, y)));
+    } else if (valid_move(gameBoard[i][y])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, y)));
+    }
+  }
+
+  for (int i = y - 1; i >=0 ; i--) { //down
+    if (gameBoard[x][i] != NO_PIECE && valid_move(gameBoard[x][i])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, i)));
+      break;
+    } else if (valid_move(gameBoard[x][i])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, i)));
+    }
+  }
+
+  for (int i = y + 1; y < TABLE_SIZE; i++) { //up
+    if (gameBoard[x][i] != NO_PIECE && valid_move(gameBoard[x][i])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, i)));
+      break;
+    } else if (valid_move(gameBoard[x][i])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, i)));
+    }
+  }
+  return moves;
+}
+
+std::vector<Move*> Bot::bishop_moves(int x, int y, PlaySide side)
+{
+  std::vector<Move*> moves;
+  bool turn = false;
+
+  auto valid_move = turn ? [](char c){return c < 0;} : [](char c){ return c > 0;};
+  for (int i = x + 1, j = y + 1; i < TABLE_SIZE && j < TABLE_SIZE; i++, j++) {//up right
+    if (gameBoard[i][j] != NO_PIECE && valid_move(gameBoard[i][j])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, j)));
+      break;
+    } else if (valid_move(gameBoard[i][j])){
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, j)));
+    }
+  }
+
+  for (int i = x - 1, j = y + 1; i >= 0 && j < TABLE_SIZE; i--, j++) {//up left
+    if (gameBoard[i][j] != NO_PIECE && valid_move(gameBoard[i][j])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, j)));
+      break;
+    } else if (valid_move(gameBoard[i][j])){
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, j)));
+    }
+  }
+
+  for (int i = x + 1, j = y - 1; i < TABLE_SIZE && j >= 0; i++, j--) {//down right
+    if (gameBoard[i][j] != NO_PIECE && valid_move(gameBoard[i][j])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, j)));
+      break;
+    } else if (valid_move(gameBoard[i][j])){
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, j)));
+    }
+  }
+
+  for (int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) {//down left
+    if (gameBoard[i][j] != NO_PIECE && valid_move(gameBoard[i][j])) {
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, j)));
+      break;
+    } else if (valid_move(gameBoard[i][j])){
+      moves.push_back(Move::moveTo(getPosition(x, y), getPosition(i, j)));
+    }
+  }
+  return moves;
+}
+
+std::vector<Move*> Bot::queen_moves(int x, int y, PlaySide side)
+{
+  //std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> moves;
+  auto all_moves = rook_moves(x, y, side);
+  auto moves_bishop = bishop_moves(x, y, side);
+  all_moves.insert(all_moves.end(), moves_bishop.begin(), moves_bishop.end());
+  return all_moves;
+}
+
 Move* Bot::calculateNextMove() {
   /* Play move for the side the engine is playing (Hint: Main.getEngineSide())
    * Make sure to record your move in custom structures before returning.
