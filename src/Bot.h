@@ -147,10 +147,11 @@ class Bot {
   std::vector<MoveContext> moveBlackPawn(int x, int y);
 
   /* generate possible moves with knight from specified coordinates */
-  std::vector<Move*> moveKnight(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured);
+  std::vector<MoveContext> moveKnight(int x, int y, PlaySide side);
 
   /* generate possible moves with king from specified coordinates */
-  std::vector<Move*> moveKing(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured);
+  std::vector<MoveContext> moveKing(int x, int y, PlaySide side);
+
   std::vector<MoveContext> rook_moves(int x, int y, PlaySide side);
   std::vector<MoveContext> bishop_moves(int x, int y, PlaySide side);
   std::vector<MoveContext> queen_moves(int x, int y, PlaySide side);

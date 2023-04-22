@@ -597,9 +597,24 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
     possibleMoves.push_back(newMove);
   }
 
+  /* promote pawn */
   if (x == 7 && gameBoard[x + 1][y] == NO_PIECE)
   {
-    possibleMoves.push_back(MoveContext(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), QUEEN)));
+    MoveContext newMoveQ(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), QUEEN));
+    newMoveQ.currentBoard[x + 1][y] = WHITE_QUEEN;
+    possibleMoves.push_back(newMoveQ);
+
+    MoveContext newMoveR(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), ROOK));
+    newMoveR.currentBoard[x + 1][y] = WHITE_ROOK;
+    possibleMoves.push_back(newMoveR);
+
+    MoveContext newMoveB(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), BISHOP));
+    newMoveB.currentBoard[x + 1][y] = WHITE_BISHOP;
+    possibleMoves.push_back(newMoveB);
+
+    MoveContext newMoveK(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), KNIGHT));
+    newMoveK.currentBoard[x + 1][y] = WHITE_KNIGHT;
+    possibleMoves.push_back(newMoveK);
   }
 
   if (gameBoard[x + 1][y] == NO_PIECE)
@@ -657,12 +672,24 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     possibleMoves.push_back(newMove);
   }
 
+  /* promote pawn */
   if (x == 2 && gameBoard[x - 1][y] == NO_PIECE)
   {
-    possibleMoves.push_back(MoveContext(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), QUEEN)));
-    possibleMoves.push_back(MoveContext(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), ROOK)));
-    possibleMoves.push_back(MoveContext(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), BISHOP)));
-    possibleMoves.push_back(MoveContext(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), KNIGHT)));
+    MoveContext newMoveQ(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), QUEEN));
+    newMoveQ.currentBoard[x - 1][y] = BLACK_QUEEN;
+    possibleMoves.push_back(newMoveQ);
+
+    MoveContext newMoveR(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), ROOK));
+    newMoveR.currentBoard[x - 1][y] = BLACK_ROOK;
+    possibleMoves.push_back(newMoveR);
+
+    MoveContext newMoveB(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), BISHOP));
+    newMoveB.currentBoard[x - 1][y] = BLACK_BISHOP;
+    possibleMoves.push_back(newMoveB);
+
+    MoveContext newMoveK(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), KNIGHT));
+    newMoveK.currentBoard[x - 1][y] = BLACK_KNIGHT;
+    possibleMoves.push_back(newMoveK);
   }
 
   if (gameBoard[x - 1][y] == NO_PIECE)
@@ -670,31 +697,31 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     possibleMoves.push_back(MoveContext(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y))));
   }
 
-  if (gameBoard[x - 1][y + 1] < NO_PIECE)
+  if (gameBoard[x - 1][y + 1] > NO_PIECE)
   {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
     newMove.myCapturedPieces.push_back(gameBoard[x - 1][y + 1]);
     possibleMoves.push_back(newMove);
   }
 
-  if (gameBoard[x + 1][y - 1] < NO_PIECE)
+  if (gameBoard[x - 1][y - 1] > NO_PIECE)
   {
-    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x + 1][y - 1]);
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
+    newMove.myCapturedPieces.push_back(gameBoard[x - 1][y - 1]);
     possibleMoves.push_back(newMove);
   }
 
-  if (gameBoard[x][y - 1] == BLACK_EN_PAS)
+  if (gameBoard[x][y - 1] == WHITE_EN_PAS)
   {
-    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
     newMove.myCapturedPieces.push_back(gameBoard[x][y - 1]);
     newMove.currentBoard[x][y - 1] = NO_PIECE;
     possibleMoves.push_back(newMove);
   }
 
-  if (gameBoard[x][y + 1] == BLACK_EN_PAS)
+  if (gameBoard[x][y + 1] == WHITE_EN_PAS)
   {
-    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 1, y + 1)));
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
     newMove.myCapturedPieces.push_back(gameBoard[x][y + 1]);
     newMove.currentBoard[x][y + 1] = NO_PIECE;
     possibleMoves.push_back(newMove);
@@ -703,57 +730,121 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
   return possibleMoves;
 }
 
-std::vector<Move *> Bot::moveKnight(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured)
+std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
 {
   if ((side == WHITE && gameBoard[x][y] != WHITE_KNIGHT) || (side == BLACK && gameBoard[x][y] != BLACK_KNIGHT))
   {
-    return std::vector<Move *>();
+    return std::vector<MoveContext>();
   }
 
-  std::vector<Move *> possibleMoves;
+  std::vector<MoveContext> possibleMoves;
 
   if (x + 2 <= 8)
   {
-    if (y + 1 <= 8 && gameBoard[x + 2][y + 1] <= NO_PIECE)
+    if (y + 1 <= 8)
     {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 2, y + 1)));
+      MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 2, y + 1)));
 
-      if (gameBoard[x + 2][y + 1] < NO_PIECE)
+      if (gameBoard[x + 2][y + 1] != NO_PIECE)
       {
-        captured.push_back(gameBoard[x + 2][y + 1]);
+        /* a piece on the desired spot => check if it can be captured or not */
+        if (side == WHITE  && gameBoard[x + 2][y + 1] < NO_PIECE)
+        {
+          newMove.myCapturedPieces.push_back(gameBoard[x + 2][y + 1]);
+          possibleMoves.push_back(newMove);
+        }
+
+        if (side == BLACK  && gameBoard[x + 2][y + 1] > NO_PIECE)
+        {
+          newMove.myCapturedPieces.push_back(gameBoard[x + 2][y + 1]);
+          possibleMoves.push_back(newMove);
+        }
+      }
+      else
+      {
+        /* no piece on the desired spot => free to move there */
+        possibleMoves.push_back(newMove);
       }
     }
 
-    if (y - 1 >= 1 && gameBoard[x + 2][y - 1] <= NO_PIECE)
+    if (y - 1 >= 1)
     {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 2, y - 1)));
+      MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 2, y - 1)));
 
-      if (gameBoard[x + 2][y - 1] < NO_PIECE)
+      if (gameBoard[x + 2][y - 1] != NO_PIECE)
       {
-        captured.push_back(gameBoard[x + 2][y - 1]);
+        /* a piece on the desired spot => check if it can be captured or not */
+        if (side == WHITE  && gameBoard[x + 2][y - 1] < NO_PIECE)
+        {
+          newMove.myCapturedPieces.push_back(gameBoard[x + 2][y - 1]);
+          possibleMoves.push_back(newMove);
+        }
+
+        if (side == BLACK  && gameBoard[x + 2][y - 1] > NO_PIECE)
+        {
+          newMove.myCapturedPieces.push_back(gameBoard[x + 2][y - 1]);
+          possibleMoves.push_back(newMove);
+        }
+      }
+      else
+      {
+        /* no piece on the desired spot => free to move there */
+        possibleMoves.push_back(newMove);
       }
     }
   }
 
   if (x - 2 >= 1)
   {
-    if (y + 1 <= 8 && gameBoard[x - 2][y + 1] <= NO_PIECE)
+    if (y + 1 <= 8)
     {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 2, y + 1)));
+      MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 2, y + 1)));
 
-      if (gameBoard[x - 2][y + 1] < NO_PIECE)
+      if (gameBoard[x - 2][y + 1] != NO_PIECE)
       {
-        captured.push_back(gameBoard[x - 2][y + 1]);
+        /* a piece on the desired spot => check if it can be captured or not */
+        if (side == WHITE  && gameBoard[x - 2][y + 1] < NO_PIECE)
+        {
+          newMove.myCapturedPieces.push_back(gameBoard[x - 2][y + 1]);
+          possibleMoves.push_back(newMove);
+        }
+
+        if (side == BLACK  && gameBoard[x - 2][y + 1] > NO_PIECE)
+        {
+          newMove.myCapturedPieces.push_back(gameBoard[x - 2][y + 1]);
+          possibleMoves.push_back(newMove);
+        }
+      }
+      else
+      {
+        /* no piece on the desired spot => free to move there */
+        possibleMoves.push_back(newMove);
       }
     }
 
-    if (y - 1 >= 1 && gameBoard[x - 2][y - 1] <= NO_PIECE)
+    if (y - 1 >= 1)
     {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 2, y - 1)));
+      MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 2, y - 1)));
 
-      if (gameBoard[x - 2][y - 1] < NO_PIECE)
+      if (gameBoard[x - 2][y - 1] != NO_PIECE)
       {
-        captured.push_back(gameBoard[x - 2][y - 1]);
+        /* a piece on the desired spot => check if it can be captured or not */
+        if (side == WHITE  && gameBoard[x - 2][y - 1] < NO_PIECE)
+        {
+          newMove.myCapturedPieces.push_back(gameBoard[x - 2][y - 1]);
+          possibleMoves.push_back(newMove);
+        }
+
+        if (side == BLACK  && gameBoard[x - 2][y - 1] > NO_PIECE)
+        {
+          newMove.myCapturedPieces.push_back(gameBoard[x - 2][y - 1]);
+          possibleMoves.push_back(newMove);
+        }
+      }
+      else
+      {
+        /* no piece on the desired spot => free to move there */
+        possibleMoves.push_back(newMove);
       }
     }
   }
@@ -761,189 +852,167 @@ std::vector<Move *> Bot::moveKnight(int x, int y, PlaySide side, std::vector<Pla
   return possibleMoves;
 }
 
-std::vector<Move *> Bot::moveKing(int x, int y, PlaySide side, std::vector<PlaySidePiece> &captured)
+std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 {
   if ((side == WHITE && gameBoard[x][y] != WHITE_KING) || (side == BLACK && gameBoard[x][y] != BLACK_KING))
   {
-    return std::vector<Move *>();
+    return std::vector<MoveContext>();
   }
 
-  std::vector<Move *> possibleMoves;
+  std::vector<MoveContext> possibleMoves;
 
-  if (side == WHITE)
+  if (x + 1 <= 8)
   {
-    if (x + 1 <= 8 && gameBoard[x + 1][y] <= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y)));
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 1, y)));
 
-      if (gameBoard[x + 1][y] < NO_PIECE)
-      {
-        captured.push_back(gameBoard[x + 1][y]);
+    if (gameBoard[x + 1][y] != NO_PIECE)
+    {
+      if (side == WHITE && gameBoard[x + 1][y] < NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x + 1][y]);
+      }
+
+      if (side == BLACK && gameBoard[x + 1][y] > NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x + 1][y]);
       }
     }
 
-    if (x - 1 >= 1 && gameBoard[x - 1][y] <= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y)));
-
-      if (gameBoard[x - 1][y] < NO_PIECE)
-      {
-        captured.push_back(gameBoard[x - 1][y]);
-      }
-    }
-
-    if (y + 1 <= 8 && gameBoard[x][y + 1] <= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y + 1)));
-
-      if (gameBoard[x][y + 1] < NO_PIECE)
-      {
-        captured.push_back(gameBoard[x][y + 1]);
-      }
-    }
-
-    if (y - 1 >= 1 && gameBoard[x][y - 1] <= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y - 1)));
-
-      if (gameBoard[x][y - 1] < NO_PIECE)
-      {
-        captured.push_back(gameBoard[x][y - 1]);
-      }
-    }
-
-    if (x + 1 <= 8 && y + 1 <= 8 && gameBoard[x + 1][y + 1] <= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y + 1)));
-
-      if (gameBoard[x + 1][y + 1] < NO_PIECE)
-      {
-        captured.push_back(gameBoard[x + 1][y + 1]);
-      }
-    }
-
-    if (x + 1 <= 8 && y - 1 >= 1 && gameBoard[x + 1][y - 1] <= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
-
-      if (gameBoard[x + 1][y - 1] < NO_PIECE)
-      {
-        captured.push_back(gameBoard[x + 1][y - 1]);
-      }
-    }
-
-    if (x - 1 >= 1 && y + 1 <= 8 && gameBoard[x - 1][y + 1] <= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
-
-      if (gameBoard[x - 1][y + 1] < NO_PIECE)
-      {
-        captured.push_back(gameBoard[x - 1][y + 1]);
-      }
-    }
-
-    if (x - 1 >= 1 && y - 1 >= 1 && gameBoard[x - 1][y - 1] <= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
-
-      if (gameBoard[x - 1][y - 1] < NO_PIECE)
-      {
-        captured.push_back(gameBoard[x - 1][y - 1]);
-      }
-    }
+    possibleMoves.push_back(newMove);
   }
 
-  if (side == BLACK)
+  if (x - 1 >= 1)
   {
-    if (x + 1 <= 8 && gameBoard[x + 1][y] >= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y)));
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y)));
 
-      if (gameBoard[x + 1][y] > NO_PIECE)
-      {
-        captured.push_back(gameBoard[x + 1][y]);
+    if (gameBoard[x - 1][y] != NO_PIECE)
+    {
+      if (side == WHITE && gameBoard[x - 1][y] < NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x - 1][y]);
+      }
+
+      if (side == BLACK && gameBoard[x - 1][y] > NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x - 1][y]);
       }
     }
 
-    if (x - 1 >= 1 && gameBoard[x - 1][y] >= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y)));
+    possibleMoves.push_back(newMove);
+  }
 
-      if (gameBoard[x - 1][y] > NO_PIECE)
-      {
-        captured.push_back(gameBoard[x - 1][y]);
+  if (y + 1 <= 8)
+  {
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x, y + 1)));
+
+    if (gameBoard[x][y + 1] != NO_PIECE)
+    {
+      if (side == WHITE && gameBoard[x][y + 1] < NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x][y + 1]);
+      }
+
+      if (side == BLACK && gameBoard[x][y + 1] > NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x][y + 1]);
       }
     }
 
-    if (y + 1 <= 8 && gameBoard[x][y + 1] >= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y + 1)));
+    possibleMoves.push_back(newMove);
+  }
 
-      if (gameBoard[x][y + 1] > NO_PIECE)
-      {
-        captured.push_back(gameBoard[x][y + 1]);
+  if (y - 1 <= 8)
+  {
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x, y - 1)));
+
+    if (gameBoard[x][y - 1] != NO_PIECE)
+    {
+      if (side == WHITE && gameBoard[x][y - 1] < NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x][y - 1]);
+      }
+
+      if (side == BLACK && gameBoard[x][y - 1] > NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x][y - 1]);
       }
     }
 
-    if (y - 1 >= 1 && gameBoard[x][y - 1] >= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y - 1)));
+    possibleMoves.push_back(newMove);
+  }
 
-      if (gameBoard[x][y - 1] > NO_PIECE)
-      {
-        captured.push_back(gameBoard[x][y - 1]);
+  if (x + 1 <= 8 && y + 1 <= 8)
+  {
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 1, y + 1)));
+
+    if (gameBoard[x + 1][y + 1] != NO_PIECE)
+    {
+      if (side == WHITE && gameBoard[x + 1][y + 1] < NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x + 1][y + 1]);
+      }
+
+      if (side == BLACK && gameBoard[x + 1][y + 1] > NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x + 1][y + 1]);
       }
     }
 
-    if (x + 1 <= 8 && y + 1 <= 8 && gameBoard[x + 1][y + 1] >= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y + 1)));
+    possibleMoves.push_back(newMove);
+  }
 
-      if (gameBoard[x + 1][y + 1] > NO_PIECE)
-      {
-        captured.push_back(gameBoard[x + 1][y + 1]);
+  if (x + 1 <= 8 && y - 1 >= 1)
+  {
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
+
+    if (gameBoard[x + 1][y - 1] != NO_PIECE)
+    {
+      if (side == WHITE && gameBoard[x + 1][y - 1] < NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x + 1][y - 1]);
+      }
+
+      if (side == BLACK && gameBoard[x + 1][y - 1] > NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x + 1][y - 1]);
       }
     }
 
-    if (x + 1 <= 8 && y - 1 >= 1 && gameBoard[x + 1][y - 1] >= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x + 1, y - 1)));
+    possibleMoves.push_back(newMove);
+  }
 
-      if (gameBoard[x + 1][y - 1] > NO_PIECE)
-      {
-        captured.push_back(gameBoard[x + 1][y - 1]);
+  if (x - 1 >= 1 && y + 1 <= 8)
+  {
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
+
+    if (gameBoard[x - 1][y + 1] != NO_PIECE)
+    {
+      if (side == WHITE && gameBoard[x - 1][y + 1] < NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x - 1][y + 1]);
+      }
+
+      if (side == BLACK && gameBoard[x - 1][y + 1] > NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x - 1][y + 1]);
       }
     }
 
-    if (x - 1 >= 1 && y + 1 <= 8 && gameBoard[x - 1][y + 1] >= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y + 1)));
+    possibleMoves.push_back(newMove);
+  }
 
-      if (gameBoard[x - 1][y + 1] > NO_PIECE)
-      {
-        captured.push_back(gameBoard[x - 1][y + 1]);
+  if (x - 1 >= 1 && y - 1 >= 1)
+  {
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
+
+    if (gameBoard[x - 1][y - 1] != NO_PIECE)
+    {
+      if (side == WHITE && gameBoard[x - 1][y - 1] < NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x - 1][y - 1]);
+      }
+
+      if (side == BLACK && gameBoard[x - 1][y - 1] > NO_PIECE) {
+        newMove.myCapturedPieces.push_back(gameBoard[x - 1][y - 1]);
       }
     }
 
-    if (x - 1 >= 1 && y - 1 >= 1 && gameBoard[x - 1][y - 1] >= NO_PIECE)
-    {
-      possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x - 1, y - 1)));
-
-      if (gameBoard[x - 1][y - 1] > NO_PIECE)
-      {
-        captured.push_back(gameBoard[x - 1][y - 1]);
-      }
-    }
+    possibleMoves.push_back(newMove);
   }
 
   if (shortCastle == CAN_CASTLE)
   {
-    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y + 2)));
+    // TODO: stop being confused
   }
 
   if (longCastle == CAN_CASTLE)
   {
-    possibleMoves.push_back(Move::moveTo(getPosition(x, y), getPosition(x, y - 2)));
+    // TODO: stop being confused
   }
 
   return possibleMoves;
