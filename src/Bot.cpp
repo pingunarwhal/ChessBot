@@ -2,6 +2,8 @@
 
 #include <bits/stdc++.h>
 
+extern PlaySide engineSide;
+
 const std::string Bot::BOT_NAME = "MyBot"; /* Edit this, escaped characters are forbidden */
 
 GameConfig::GameConfig(PlaySidePiece currentConfig[TABLE_SIZE + 1][TABLE_SIZE + 1])
@@ -1212,43 +1214,63 @@ Move *Bot::calculateNextMove()
 
   std::vector<MoveContext> possibleMoves;
 
-  for (int i = 1; i <= TABLE_SIZE; i++) {
-    for (int j = 1; j <= TABLE_SIZE; j++) {
-      switch (gameBoard[i][j]) {
+  for (int i = 1; i <= TABLE_SIZE; i++)
+  {
+    for (int j = 1; j <= TABLE_SIZE; j++)
+    {
+      switch (gameBoard[i][j])
+      {
       case WHITE_PAWN:
       case WHITE_EN_PAS:
+      {
         std::vector<MoveContext> whitePawnMoves = moveWhitePawn(i, j);
         possibleMoves.insert(possibleMoves.end(), whitePawnMoves.begin(), whitePawnMoves.end());
         break;
+      }
       case BLACK_PAWN:
       case BLACK_EN_PAS:
+      {
         std::vector<MoveContext> blackPawnMoves = moveBlackPawn(i, j);
         possibleMoves.insert(possibleMoves.end(), blackPawnMoves.begin(), blackPawnMoves.end());
         break;
+      }
       case WHITE_ROOK:
       case BLACK_ROOK:
+      {
         std::vector<MoveContext> rookMoves = rook_moves(i, j, engineSide);
         possibleMoves.insert(possibleMoves.end(), rookMoves.begin(), rookMoves.end());
         break;
+      }
       case WHITE_BISHOP:
       case BLACK_BISHOP:
+      {
         std::vector<MoveContext> bishopMoves = bishop_moves(i, j, engineSide);
         possibleMoves.insert(possibleMoves.end(), bishopMoves.begin(), bishopMoves.end());
         break;
+      }
       case WHITE_KNIGHT:
       case BLACK_KNIGHT:
-        std::vector<Move *> knightMoves = moveKnight(i, j, engineSide);
+      {
+        std::vector<MoveContext> knightMoves = moveKnight(i, j, engineSide);
         possibleMoves.insert(possibleMoves.end(), knightMoves.begin(), knightMoves.end());
         break;
+      }
       case WHITE_QUEEN:
       case BLACK_QUEEN:
+      {
         std::vector<MoveContext> queenMoves = queen_moves(i, j, engineSide);
         possibleMoves.insert(possibleMoves.end(), queenMoves.begin(), queenMoves.end());
         break;
+      }
       case WHITE_KING:
       case BLACK_KING:
-        std::vector<Move *> kingMoves = moveKing(i, j, engineSide);
+      {
+        std::vector<MoveContext> kingMoves = moveKing(i, j, engineSide);
         possibleMoves.insert(possibleMoves.end(), kingMoves.begin(), kingMoves.end());
+        break;
+      }
+      default:
+        // fctia mariei
         break;
       }
     }

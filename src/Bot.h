@@ -18,7 +18,7 @@ enum PlaySidePiece {
   BLACK_PAWN = -1, BLACK_ROOK = -2,
   BLACK_BISHOP = -3, BLACK_KNIGHT = -4,
   BLACK_QUEEN = -5, BLACK_KING = -6,
-  BLACK_EN_PAS = 7,
+  BLACK_EN_PAS = -7,
   NO_PIECE = 0
 };
 
