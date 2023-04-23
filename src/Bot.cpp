@@ -1204,6 +1204,34 @@ std::vector<MoveContext> Bot::queen_moves(int x, int y, PlaySide side)
   return all_moves;
 }
 
+std::vector<MoveContext> Bot::createCrazyHouse()
+{
+  std::vector<MoveContext> possibleMoves;
+
+  for (auto & piece: myCapturedPieces) {
+    for (int i = 1; i <= TABLE_SIZE; ++i)
+      for (int j = 1; j <= TABLE_SIZE; ++j) {
+        if ((i == 1 || i == 8) && (piece == WHITE_PAWN || piece == BLACK_PAWN)) {
+          continue;
+        }
+
+        if (gameBoard[i][j] == NO_PIECE) {
+          gameBoard[i][j] = piece;
+
+          // Most likely it is not legal to simulate introducing a CrazyHouse piece by movien it
+          // from (i, j) to (i, j)
+          MoveContext newMove(this, Move::moveTo(getPosition(i, j), getPosition(i, j)));
+          possibleMoves.push_back(newMove);
+
+          // Set the board back to the state before introducing the fictive piece
+          gameBoard[i][j] = NO_PIECE;
+        }
+      }
+  }
+
+  return possibleMoves;
+}
+
 Move *Bot::calculateNextMove()
 {
   /* Play move for the side the engine is playing (Hint: Main.getEngineSide())
@@ -1270,7 +1298,8 @@ Move *Bot::calculateNextMove()
         break;
       }
       default:
-        // fctia mariei
+        std::vector<MoveContext> crazyMoves = createCrazyHouse();
+        possibleMoves.insert(possibleMoves.end(), crazyMoves.begin(), crazyMoves.end());
         break;
       }
     }

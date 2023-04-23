@@ -155,6 +155,9 @@ class Bot {
   std::vector<MoveContext> rook_moves(int x, int y, PlaySide side);
   std::vector<MoveContext> bishop_moves(int x, int y, PlaySide side);
   std::vector<MoveContext> queen_moves(int x, int y, PlaySide side);
+
+  /* generate possible moves with CrazyHouse captured pieces */
+  std::vector<MoveContext> createCrazyHouse();
   
   static std::string getBotName();
 };
