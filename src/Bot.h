@@ -171,5 +171,21 @@ class MoveContext {
     Move* actualMove;
 
     MoveContext(Bot* bot, Move* move);
+
+    void findKing(PlaySidePiece king, int &x, int &y);
+
+    bool checkPawnAttack(PlaySide side, PlaySidePiece pawn, int &x, int &y);
+
+    bool checkRookAttack(PlaySidePiece rook, int &x, int &y);
+
+    bool checkKnightAttack(PlaySidePiece knight, int &x, int &y);
+
+    bool checkBishopAttack(PlaySidePiece bishop, int &x, int &y);
+
+    bool checkQueenAttack(PlaySidePiece queen, int &x, int &y);
+
+    bool checkKingAttack(PlaySidePiece king, int &x, int &y);
+
+    bool checkKingSafety(PlaySide sideToMove);
 };
 #endif
