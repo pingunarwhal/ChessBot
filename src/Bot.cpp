@@ -597,7 +597,9 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
     MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 2, y)));
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 2][y] = WHITE_EN_PAS;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   /* promote pawn */
@@ -607,22 +609,30 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
     MoveContext newMoveQ(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), QUEEN));
     newMoveQ.currentBoard[x][y] = NO_PIECE;
     newMoveQ.currentBoard[x + 1][y] = WHITE_QUEEN;
-    possibleMoves.push_back(newMoveQ);
+    if (!newMoveQ.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMoveQ);
+    }
 
     MoveContext newMoveR(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), ROOK));
     newMoveR.currentBoard[x][y] = NO_PIECE;
     newMoveR.currentBoard[x + 1][y] = WHITE_ROOK;
-    possibleMoves.push_back(newMoveR);
+    if (!newMoveR.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMoveR);
+    }
 
     MoveContext newMoveB(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), BISHOP));
     newMoveB.currentBoard[x][y] = NO_PIECE;
     newMoveB.currentBoard[x + 1][y] = WHITE_BISHOP;
-    possibleMoves.push_back(newMoveB);
+    if (!newMoveB.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMoveB);
+    }
 
     MoveContext newMoveK(this, Move::promote(getPosition(x, y), getPosition(x + 1, y), KNIGHT));
     newMoveK.currentBoard[x][y] = NO_PIECE;
     newMoveK.currentBoard[x + 1][y] = WHITE_KNIGHT;
-    possibleMoves.push_back(newMoveK);
+    if (!newMoveK.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMoveK);
+    }
   }
 
   if (gameBoard[x + 1][y] == NO_PIECE)
@@ -630,7 +640,9 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
     MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 1, y)));
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y] = WHITE_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (gameBoard[x + 1][y + 1] < NO_PIECE)
@@ -639,7 +651,9 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
     newMove.myCapturedPieces.push_back(gameBoard[x + 1][y + 1]);
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y + 1] = WHITE_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (gameBoard[x + 1][y - 1] < NO_PIECE)
@@ -648,7 +662,9 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
     newMove.myCapturedPieces.push_back(gameBoard[x + 1][y - 1]);
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y - 1] = WHITE_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (gameBoard[x][y - 1] == BLACK_EN_PAS)
@@ -658,7 +674,9 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
     newMove.currentBoard[x][y - 1] = NO_PIECE;
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y - 1] = WHITE_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (gameBoard[x][y + 1] == BLACK_EN_PAS)
@@ -668,7 +686,9 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
     newMove.currentBoard[x][y + 1] = NO_PIECE;
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y + 1] = WHITE_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(BLACK)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   return possibleMoves;
@@ -689,7 +709,9 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 2, y)));
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 2][y] = BLACK_EN_PAS;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   /* promote pawn */
@@ -698,22 +720,30 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     MoveContext newMoveQ(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), QUEEN));
     newMoveQ.currentBoard[x][y] = NO_PIECE;
     newMoveQ.currentBoard[x - 1][y] = BLACK_QUEEN;
-    possibleMoves.push_back(newMoveQ);
+    if (!newMoveQ.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMoveQ);
+    }
 
     MoveContext newMoveR(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), ROOK));
     newMoveR.currentBoard[x][y] = NO_PIECE;
     newMoveR.currentBoard[x - 1][y] = BLACK_ROOK;
-    possibleMoves.push_back(newMoveR);
+    if (!newMoveR.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMoveR);
+    }
 
     MoveContext newMoveB(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), BISHOP));
     newMoveB.currentBoard[x][y] = NO_PIECE;
     newMoveB.currentBoard[x - 1][y] = BLACK_BISHOP;
-    possibleMoves.push_back(newMoveB);
+    if (!newMoveB.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMoveB);
+    }
 
     MoveContext newMoveK(this, Move::promote(getPosition(x, y), getPosition(x - 1, y), KNIGHT));
     newMoveK.currentBoard[x][y] = NO_PIECE;
     newMoveK.currentBoard[x - 1][y] = BLACK_KNIGHT;
-    possibleMoves.push_back(newMoveK);
+    if (!newMoveK.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMoveK);
+    }
   }
 
   if (gameBoard[x - 1][y] == NO_PIECE)
@@ -721,7 +751,9 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 1, y)));
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y] = BLACK_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (gameBoard[x - 1][y + 1] > NO_PIECE)
@@ -730,7 +762,9 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     newMove.myCapturedPieces.push_back(gameBoard[x - 1][y + 1]);
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y + 1] = BLACK_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (gameBoard[x - 1][y - 1] > NO_PIECE)
@@ -739,7 +773,9 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     newMove.myCapturedPieces.push_back(gameBoard[x - 1][y - 1]);
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y - 1] = BLACK_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (gameBoard[x][y - 1] == WHITE_EN_PAS)
@@ -749,7 +785,9 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     newMove.currentBoard[x][y - 1] = NO_PIECE;
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y - 1] = BLACK_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (gameBoard[x][y + 1] == WHITE_EN_PAS)
@@ -759,7 +797,9 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
     newMove.currentBoard[x][y + 1] = NO_PIECE;
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y + 1] = BLACK_PAWN;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   return possibleMoves;
@@ -788,7 +828,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
           newMove.myCapturedPieces.push_back(gameBoard[x + 2][y + 1]);
           newMove.currentBoard[x][y] = NO_PIECE;
           newMove.currentBoard[x + 2][y + 1] = WHITE_KNIGHT;
-          possibleMoves.push_back(newMove);
+          if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+            possibleMoves.push_back(newMove);
+          }
         }
 
         if (side == BLACK && gameBoard[x + 2][y + 1] > NO_PIECE)
@@ -796,7 +838,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
           newMove.myCapturedPieces.push_back(gameBoard[x + 2][y + 1]);
           newMove.currentBoard[x][y] = NO_PIECE;
           newMove.currentBoard[x + 2][y + 1] = BLACK_KNIGHT;
-          possibleMoves.push_back(newMove);
+          if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+            possibleMoves.push_back(newMove);
+          }
         }
       }
       else
@@ -804,7 +848,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
         /* no piece on the desired spot => free to move there */
         newMove.currentBoard[x + 2][y + 1] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y] = NO_PIECE;
-        possibleMoves.push_back(newMove);
+        if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+          possibleMoves.push_back(newMove);
+        }
       }
     }
 
@@ -820,7 +866,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
           newMove.myCapturedPieces.push_back(gameBoard[x + 2][y - 1]);
           newMove.currentBoard[x][y] = NO_PIECE;
           newMove.currentBoard[x + 2][y - 1] = WHITE_KNIGHT;
-          possibleMoves.push_back(newMove);
+          if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+            possibleMoves.push_back(newMove);
+          }
         }
 
         if (side == BLACK && gameBoard[x + 2][y - 1] > NO_PIECE)
@@ -828,7 +876,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
           newMove.myCapturedPieces.push_back(gameBoard[x + 2][y - 1]);
           newMove.currentBoard[x][y] = NO_PIECE;
           newMove.currentBoard[x + 2][y - 1] = BLACK_KNIGHT;
-          possibleMoves.push_back(newMove);
+          if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+            possibleMoves.push_back(newMove);
+          }
         }
       }
       else
@@ -836,7 +886,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
         /* no piece on the desired spot => free to move there */
         newMove.currentBoard[x + 2][y - 1] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y] = NO_PIECE;
-        possibleMoves.push_back(newMove);
+        if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+          possibleMoves.push_back(newMove);
+        }
       }
     }
   }
@@ -855,7 +907,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
           newMove.myCapturedPieces.push_back(gameBoard[x - 2][y + 1]);
           newMove.currentBoard[x][y] = NO_PIECE;
           newMove.currentBoard[x - 2][y + 1] = WHITE_KNIGHT;
-          possibleMoves.push_back(newMove);
+          if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+            possibleMoves.push_back(newMove);
+          }
         }
 
         if (side == BLACK && gameBoard[x - 2][y + 1] > NO_PIECE)
@@ -863,7 +917,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
           newMove.myCapturedPieces.push_back(gameBoard[x - 2][y + 1]);
           newMove.currentBoard[x][y] = NO_PIECE;
           newMove.currentBoard[x - 2][y + 1] = BLACK_KNIGHT;
-          possibleMoves.push_back(newMove);
+          if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+            possibleMoves.push_back(newMove);
+          }
         }
       }
       else
@@ -871,7 +927,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
         /* no piece on the desired spot => free to move there */
         newMove.currentBoard[x - 2][y + 1] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y] = NO_PIECE;
-        possibleMoves.push_back(newMove);
+        if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+          possibleMoves.push_back(newMove);
+        }
       }
     }
 
@@ -887,7 +945,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
           newMove.myCapturedPieces.push_back(gameBoard[x - 2][y - 1]);
           newMove.currentBoard[x][y] = NO_PIECE;
           newMove.currentBoard[x - 2][y - 1] = WHITE_KNIGHT;
-          possibleMoves.push_back(newMove);
+          if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+            possibleMoves.push_back(newMove);
+          }
         }
 
         if (side == BLACK && gameBoard[x - 2][y - 1] > NO_PIECE)
@@ -895,7 +955,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
           newMove.myCapturedPieces.push_back(gameBoard[x - 2][y - 1]);
           newMove.currentBoard[x][y] = NO_PIECE;
           newMove.currentBoard[x - 2][y - 1] = BLACK_KNIGHT;
-          possibleMoves.push_back(newMove);
+          if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+            possibleMoves.push_back(newMove);
+          }
         }
       }
       else
@@ -903,7 +965,9 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side)
         /* no piece on the desired spot => free to move there */
         newMove.currentBoard[x - 2][y - 1] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y] = NO_PIECE;
-        possibleMoves.push_back(newMove);
+        if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+          possibleMoves.push_back(newMove);
+        }
       }
     }
   }
@@ -939,7 +1003,9 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
     newMove.currentBoard[x + 1][y] = newMove.currentBoard[x][y];
     newMove.currentBoard[x][y] = NO_PIECE;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (x - 1 >= 1)
@@ -961,7 +1027,9 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
     newMove.currentBoard[x - 1][y] = newMove.currentBoard[x][y];
     newMove.currentBoard[x][y] = NO_PIECE;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (y + 1 <= 8)
@@ -983,7 +1051,9 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
     newMove.currentBoard[x][y + 1] = newMove.currentBoard[x][y];
     newMove.currentBoard[x][y] = NO_PIECE;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (y - 1 <= 8)
@@ -1005,7 +1075,9 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
     newMove.currentBoard[x][y - 1] = newMove.currentBoard[x][y];
     newMove.currentBoard[x][y] = NO_PIECE;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (x + 1 <= 8 && y + 1 <= 8)
@@ -1027,7 +1099,9 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
     newMove.currentBoard[x + 1][y + 1] = newMove.currentBoard[x][y];
     newMove.currentBoard[x][y] = NO_PIECE;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (x + 1 <= 8 && y - 1 >= 1)
@@ -1049,7 +1123,9 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
     newMove.currentBoard[x + 1][y - 1] = newMove.currentBoard[x][y];
     newMove.currentBoard[x][y] = NO_PIECE;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (x - 1 >= 1 && y + 1 <= 8)
@@ -1071,7 +1147,9 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
     newMove.currentBoard[x - 1][y + 1] = newMove.currentBoard[x][y];
     newMove.currentBoard[x][y] = NO_PIECE;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (x - 1 >= 1 && y - 1 >= 1)
@@ -1093,17 +1171,27 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
     newMove.currentBoard[x - 1][y - 1] = newMove.currentBoard[x][y];
     newMove.currentBoard[x][y] = NO_PIECE;
-    possibleMoves.push_back(newMove);
+    if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+      possibleMoves.push_back(newMove);
+    }
   }
 
   if (shortCastle == CAN_CASTLE)
   {
-    // TODO: stop being confused
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x, y + 2)));
+    newMove.currentBoard[x][y + 2] = newMove.currentBoard[x][y];
+    newMove.currentBoard[x][y] = NO_PIECE;
+    newMove.currentBoard[x][y - 1] = newMove.currentBoard[x][TABLE_SIZE];
+    newMove.currentBoard[x][TABLE_SIZE] = NO_PIECE;
   }
 
   if (longCastle == CAN_CASTLE)
   {
-    // TODO: stop being confused
+    MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x, y - 2)));
+    newMove.currentBoard[x][y - 2] = newMove.currentBoard[x][y];
+    newMove.currentBoard[x][y] = NO_PIECE;
+    newMove.currentBoard[x][y + 1] = newMove.currentBoard[x][1];
+    newMove.currentBoard[x][1] = NO_PIECE;
   }
 
   return possibleMoves;
@@ -1416,4 +1504,314 @@ MoveContext::MoveContext(Bot *bot, Move *move)
   }
 
   this->actualMove = move;
+}
+
+void MoveContext::findKing(PlaySidePiece king, int &x, int &y)
+{
+  for (int i = 1; i <= TABLE_SIZE; i++)
+  {
+    for (int j = 1; j <= TABLE_SIZE; j++)
+    {
+      if (currentBoard[i][j] == king)
+      {
+        x = i;
+        y = j;
+        return;
+      }
+    }
+  }
+}
+
+bool MoveContext::checkPawnAttack(PlaySide side, PlaySidePiece pawn, int &x, int &y)
+{
+  if (side == BLACK)
+  {
+    /* check for black pawns -- they attack on a lower x value */
+    for (int i = 1; i <= TABLE_SIZE; i++)
+    {
+      for (int j = 1; j <= TABLE_SIZE; j++)
+      {
+        if (currentBoard[i][j] != pawn)
+        {
+          continue;
+        }
+
+        if (x == (i - 1) && (y == (j - 1) || y == (j + 1)))
+        {
+          return true;
+        }
+      }
+    }
+  }
+  else
+  {
+    /* check for white pawns -- they attack on a higher x value */
+    for (int i = 1; i <= TABLE_SIZE; i++)
+    {
+      for (int j = 1; j <= TABLE_SIZE; j++)
+      {
+        if (currentBoard[i][j] != pawn)
+        {
+          continue;
+        }
+
+        if (x == (i + 1) && (y == (j - 1) || y == (j + 1)))
+        {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+bool MoveContext::checkRookAttack(PlaySidePiece rook, int &x, int &y)
+{
+  bool pieceBetween;
+
+  for (int i = 1; i <= TABLE_SIZE; i++)
+  {
+    for (int j = 1; j <= TABLE_SIZE; j++)
+    {
+      if (currentBoard[i][j] != rook)
+      {
+        continue;
+      }
+
+      /* rook and king on the same row */
+      if (x == i)
+      {
+        int start = std::min(y, j) + 1;
+        int end = std::max(y, j);
+
+        pieceBetween = false;
+
+        for (; start < end; start++)
+        {
+          if (currentBoard[i][start] != NO_PIECE)
+          {
+            pieceBetween = true;
+            break;
+          }
+        }
+
+        if (!pieceBetween)
+        {
+          return true;
+        }
+      }
+
+      /* rook and king on the same column */
+      if (y == j)
+      {
+        int start = std::min(x, i) + 1;
+        int end = std::max(x, i);
+
+        pieceBetween = false;
+
+        for (; start < end; start++)
+        {
+          if (currentBoard[start][j] != NO_PIECE)
+          {
+            pieceBetween = true;
+            break;
+          }
+        }
+
+        if (!pieceBetween)
+        {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+bool MoveContext::checkKnightAttack(PlaySidePiece knight, int &x, int &y)
+{
+  int dx[KNIGHT_MOVES] = {2, 1, -1, -2, -2, -1, 1, 2};
+  int dy[KNIGHT_MOVES] = {1, 2, 2, 1, -1, -2, -2, -1};
+
+  for (int i = 1; i <= TABLE_SIZE; i++)
+  {
+    for (int j = 1; j <= TABLE_SIZE; j++)
+    {
+      if (currentBoard[i][j] != knight)
+      {
+        continue;
+      }
+
+      /* Knight attack implies 8 relative positions */
+      for (int k = 0; k < KNIGHT_MOVES; k++)
+      {
+        if ((i + dx[k]) == x && (j + dy[k]) == y)
+        {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+bool MoveContext::checkBishopAttack(PlaySidePiece bishop, int &x, int &y)
+{
+  for (int i = 1; i <= TABLE_SIZE; i++)
+  {
+    for (int j = 1; j <= TABLE_SIZE; j++)
+    {
+      if (currentBoard[i][j] != bishop)
+      {
+        continue;
+      }
+
+      /* check if the bishop attacks the king on 1 of the 4 diagonals */
+      for (int k = 1; k < TABLE_SIZE; k++)
+      {
+        if ((i + k) <= TABLE_SIZE && (j + k) <= TABLE_SIZE)
+        {
+          if ((i + k) == x && (j + k) == y)
+          {
+            return true;
+          }
+
+          if (currentBoard[i + k][j + k] != NO_PIECE)
+          {
+            break;
+          }
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      for (int k = 1; k < TABLE_SIZE; k++)
+      {
+        if ((i - k) > 0 && (j + k) <= TABLE_SIZE)
+        {
+          if ((i - k) == x && (j + k) == y)
+          {
+            return true;
+          }
+
+          if (currentBoard[i - k][j + k] != NO_PIECE)
+          {
+            break;
+          }
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      for (int k = 1; k < TABLE_SIZE; k++)
+      {
+        if ((i - k) > 0 && (j - k) > 0)
+        {
+          if ((i - k) == x && (j - k) == y)
+          {
+            return true;
+          }
+
+          if (currentBoard[i - k][j - k] != NO_PIECE)
+          {
+            break;
+          }
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      for (int k = 1; k < TABLE_SIZE; k++)
+      {
+        if ((i + k) <= TABLE_SIZE && (j - k) > 0)
+        {
+          if ((i + k) == x && (j - k) == y)
+          {
+            return true;
+          }
+
+          if (currentBoard[i + k][j - k] != NO_PIECE)
+          {
+            break;
+          }
+        }
+        else
+        {
+          break;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+bool MoveContext::checkQueenAttack(PlaySidePiece queen, int &x, int &y)
+{
+  /* Queen is just a rook + bishop */
+  return (checkRookAttack(queen, x, y) | checkBishopAttack(queen, x, y));
+}
+
+bool MoveContext::checkKingAttack(PlaySidePiece king, int &x, int &y)
+{
+  for (int i = 1; i <= TABLE_SIZE; i++)
+  {
+    for (int j = 1; j <= TABLE_SIZE; j++)
+    {
+      if (currentBoard[i][j] != king)
+      {
+        continue;
+      }
+
+      /* Another king needs to be in one of the
+       * adjacent 9 fields on board
+       */
+      if (std::abs(x - i) <= 1 && std::abs(y - j) <= 1)
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+bool MoveContext::checkKingSafety(PlaySide sideToMove)
+{
+  int x_king, y_king;
+
+  if (sideToMove == BLACK)
+  {
+    /* check for white king's safety */
+    findKing(WHITE_KING, x_king, y_king);
+    return !(checkPawnAttack(sideToMove, BLACK_PAWN, x_king, y_king) |
+             checkPawnAttack(sideToMove, BLACK_EN_PAS, x_king, y_king) |
+             checkRookAttack(BLACK_ROOK, x_king, y_king) |
+             checkKnightAttack(BLACK_KNIGHT, x_king, y_king) |
+             checkBishopAttack(BLACK_BISHOP, x_king, y_king) |
+             checkQueenAttack(BLACK_QUEEN, x_king, y_king) |
+             checkKingAttack(BLACK_KING, x_king, y_king));
+  }
+  else
+  {
+    /* check for black king's safety */
+    findKing(BLACK_KING, x_king, y_king);
+    return !(checkPawnAttack(sideToMove, WHITE_PAWN, x_king, y_king) |
+             checkPawnAttack(sideToMove, WHITE_EN_PAS, x_king, y_king) |
+             checkRookAttack(WHITE_ROOK, x_king, y_king) |
+             checkKnightAttack(WHITE_KNIGHT, x_king, y_king) |
+             checkBishopAttack(WHITE_BISHOP, x_king, y_king) |
+             checkQueenAttack(WHITE_QUEEN, x_king, y_king) |
+             checkKingAttack(WHITE_KING, x_king, y_king));
+  }
+
+  return true;
 }
