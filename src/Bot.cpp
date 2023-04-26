@@ -591,12 +591,16 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y)
 
   std::vector<MoveContext> possibleMoves;
 
-  /* become en passant */
   if (x == 2 && gameBoard[x + 2][y] == NO_PIECE)
   {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x + 2, y)));
     newMove.currentBoard[x][y] = NO_PIECE;
-    newMove.currentBoard[x + 2][y] = WHITE_EN_PAS;
+    /* to be or not to be en passant */
+    if (newMove.currentBoard[x + 2][y - 1] == BLACK_PAWN || newMove.currentBoard[x + 2][y + 1] == BLACK_PAWN) {
+      newMove.currentBoard[x + 2][y] = WHITE_EN_PAS;
+    } else {
+      newMove.currentBoard[x + 2][y] = WHITE_PAWN;
+    }
     if (!newMove.checkKingSafety(BLACK)) {
       possibleMoves.push_back(newMove);
     }
@@ -703,12 +707,16 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y)
 
   std::vector<MoveContext> possibleMoves;
 
-  /* become en passant */
   if (x == 7 && gameBoard[x - 2][y] == NO_PIECE)
   {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x - 2, y)));
     newMove.currentBoard[x][y] = NO_PIECE;
-    newMove.currentBoard[x - 2][y] = BLACK_EN_PAS;
+    /* to be or not to be en passant */
+    if (newMove.currentBoard[x + 2][y - 1] == WHITE_PAWN || newMove.currentBoard[x + 2][y + 1] == WHITE_PAWN) {
+      newMove.currentBoard[x + 2][y] = BLACK_EN_PAS;
+    } else {
+      newMove.currentBoard[x + 2][y] = BLACK_PAWN;
+    }
     if (!newMove.checkKingSafety(WHITE)) {
       possibleMoves.push_back(newMove);
     }
