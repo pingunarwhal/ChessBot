@@ -158,6 +158,8 @@ class Bot {
 
   /* generate possible moves with CrazyHouse captured pieces */
   std::vector<MoveContext> createCrazyHouse();
+
+  void showBoard(PlaySidePiece gameBoard[TABLE_SIZE + 1][TABLE_SIZE + 1]);
   
   static std::string getBotName();
 };

@@ -286,13 +286,18 @@ class EngineComponents {
 };
 
 int main() {
-  EngineComponents* engine = new EngineComponents();
-  engine->performHandshake();
+  // EngineComponents* engine = new EngineComponents();
+  // engine->performHandshake();
 
-  while (true) {
-    /* Fetch and execute next command */
+  // while (true) {
+  //   /* Fetch and execute next command */
 
-    engine->executeOneCommand();
-  }
+  //   engine->executeOneCommand();
+  // }
+
+  /* test module */
+  Bot myBot;
+  myBot.calculateNextMove();
+  myBot.showBoard(myBot.gameBoard);
   return 0;
 }

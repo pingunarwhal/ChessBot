@@ -1881,3 +1881,13 @@ bool MoveContext::checkKingSafety(PlaySide sideToMove)
 
   return true;
 }
+
+void Bot::showBoard(PlaySidePiece gameBoard[TABLE_SIZE + 1][TABLE_SIZE + 1]) {
+  std::cout << "board:\n";
+  for (int i = 1; i <= TABLE_SIZE; i++) {
+    for (int j = 1; j <= TABLE_SIZE; j++) {
+      std::cout << gameBoard[i][j] << " ";
+    }
+    std::cout << "\n";
+  }
+}
