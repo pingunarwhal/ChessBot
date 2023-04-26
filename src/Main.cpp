@@ -299,20 +299,20 @@ int main() {
   Bot* myBot = new Bot();
   engineSide = BLACK;
 
-  /* starting simple position -- we can comment this if we play full game */
-  for (int i = 1; i <= 8; i++) {
-    for (int j = 1; j <= 8; j++) {
-      myBot->gameBoard[i][j] = NO_PIECE;
-    }
-  }
+  // /* starting simple position -- we can comment this if we play full game */
+  // for (int i = 1; i <= 8; i++) {
+  //   for (int j = 1; j <= 8; j++) {
+  //     myBot->gameBoard[i][j] = NO_PIECE;
+  //   }
+  // }
 
-  /* here you just put your initial pieces for testing */
-  myBot->gameBoard[1][1] = WHITE_ROOK;
-  myBot->gameBoard[1][5] = WHITE_KING;
-  myBot->gameBoard[8][5] = BLACK_KING;
-  myBot->gameBoard[8][8] = BLACK_ROOK;
-  myBot->shortCastle = CAN_CASTLE;
-  myBot->longCastle = NO_CASTLE;
+  // /* here you just put your initial pieces for testing */
+  // myBot->gameBoard[1][1] = WHITE_QUEEN;
+  // myBot->gameBoard[1][5] = WHITE_KING;
+  // myBot->gameBoard[8][5] = BLACK_KING;
+  // myBot->gameBoard[8][8] = BLACK_QUEEN;
+  // myBot->shortCastle = NO_CASTLE;
+  // myBot->longCastle = NO_CASTLE;
 
   myBot->showBoard(myBot->gameBoard);
 
@@ -331,7 +331,6 @@ int main() {
     myBot->showBoard(myBot->gameBoard);
     std::cin >> move_string;
   }
-
 
   return 0;
 }
