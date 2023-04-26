@@ -1199,8 +1199,7 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side)
 
 std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side)
 {
-  if ((side == WHITE && gameBoard[x][y] != WHITE_ROOK) || (side == BLACK && gameBoard[x][y] != BLACK_ROOK))
-  {
+  if ((side == WHITE && gameBoard[x][y] != WHITE_ROOK) || (side == BLACK && gameBoard[x][y] != BLACK_ROOK)) {
     return std::vector<MoveContext>();
   }
   std::vector<MoveContext> moves;
@@ -1209,19 +1208,23 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side)
   { return c < 0; }
                          : [](char c)
   { return c > 0; };
-  for (int i = x + 1; i < TABLE_SIZE; ++i)
-  { // right
-    if (gameBoard[i][y] != NO_PIECE && valid_move(gameBoard[i][y]))
-    {
+  for (int i = x + 1; i < TABLE_SIZE; ++i) { // right
+    if (gameBoard[i][y] != NO_PIECE && valid_move(gameBoard[i][y])) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, y)));
       newMove.myCapturedPieces.push_back(gameBoard[i][y]);
-      moves.push_back(newMove);
+      newMove.currentBoard[i][y] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
       break;
-    }
-    else if (valid_move(gameBoard[i][y]))
-    {
+    } else if (valid_move(gameBoard[i][y])) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, y)));
-      moves.push_back(newMove);
+      newMove.currentBoard[i][y] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
     }
   }
 
@@ -1231,13 +1234,21 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side)
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, y)));
       newMove.myCapturedPieces.push_back(gameBoard[i][y]);
-      moves.push_back(newMove);
+      newMove.currentBoard[i][y] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
       break;
     }
     else if (valid_move(gameBoard[i][y]))
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, y)));
-      moves.push_back(newMove);
+      newMove.currentBoard[i][y] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
     }
   }
 
@@ -1247,13 +1258,21 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side)
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x, i)));
       newMove.myCapturedPieces.push_back(gameBoard[x][i]);
-      moves.push_back(newMove);
+      newMove.currentBoard[x][i] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
       break;
     }
     else if (valid_move(gameBoard[x][i]))
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x, i)));
-      moves.push_back(newMove);
+      newMove.currentBoard[x][i] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
     }
   }
 
@@ -1263,13 +1282,21 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side)
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x, i)));
       newMove.myCapturedPieces.push_back(gameBoard[x][i]);
-      moves.push_back(newMove);
+      newMove.currentBoard[x][i] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
       break;
     }
     else if (valid_move(gameBoard[x][i]))
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(x, i)));
-      moves.push_back(newMove);
+      newMove.currentBoard[x][i] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
     }
   }
   return moves;
@@ -1293,13 +1320,19 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side)
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, j)));
       newMove.myCapturedPieces.push_back(gameBoard[i][j]);
-      moves.push_back(newMove);
+      newMove.currentBoard[i][j] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
       break;
-    }
-    else if (valid_move(gameBoard[i][j]))
-    {
+    } else if (valid_move(gameBoard[i][j])) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, j)));
-      moves.push_back(newMove);
+      newMove.currentBoard[i][j] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
     }
   }
 
@@ -1309,13 +1342,21 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side)
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, j)));
       newMove.myCapturedPieces.push_back(gameBoard[i][j]);
-      moves.push_back(newMove);
+      newMove.currentBoard[i][j] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
       break;
     }
     else if (valid_move(gameBoard[i][j]))
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, j)));
-      moves.push_back(newMove);
+      newMove.currentBoard[i][j] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
     }
   }
 
@@ -1325,13 +1366,21 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side)
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, j)));
       newMove.myCapturedPieces.push_back(gameBoard[i][j]);
-      moves.push_back(newMove);
+      newMove.currentBoard[i][j] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
       break;
     }
     else if (valid_move(gameBoard[i][j]))
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, j)));
-      moves.push_back(newMove);
+      newMove.currentBoard[i][j] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
     }
   }
 
@@ -1341,16 +1390,25 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side)
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, j)));
       newMove.myCapturedPieces.push_back(gameBoard[i][j]);
-      moves.push_back(newMove);
+      newMove.currentBoard[i][j] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
       break;
     }
     else if (valid_move(gameBoard[i][j]))
     {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y), getPosition(i, j)));
-      moves.push_back(newMove);
+      newMove.currentBoard[i][j] = newMove.currentBoard[x][y];
+      newMove.currentBoard[x][y] = NO_PIECE;
+      if (!newMove.checkKingSafety(side == WHITE? BLACK : WHITE)) {
+        moves.push_back(newMove);
+      }
     }
   }
   return moves;
+  
 }
 
 std::vector<MoveContext> Bot::queen_moves(int x, int y, PlaySide side)
