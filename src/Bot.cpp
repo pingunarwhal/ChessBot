@@ -1262,7 +1262,48 @@ std::vector<MoveContext> Bot::queen_moves(int x, int y, PlaySide side) {
 
   return queen_moves;
 }
-
+Piece Bot::convertPlaySidePiece(PlaySidePiece piece) {
+  switch (piece) {
+    case WHITE_PAWN:
+    case BLACK_PAWN:
+    case WHITE_EN_PAS:
+    case BLACK_EN_PAS:
+    case P_WHITE_ROOK:
+    case P_WHITE_BISHOP:
+    case P_WHITE_KNIGHT:
+    case P_WHITE_QUEEN:
+    case P_BLACK_ROOK:
+    case P_BLACK_BISHOP:
+    case P_BLACK_KNIGHT:
+    case P_BLACK_QUEEN: {
+      return PAWN;
+      break;
+    }
+    case WHITE_ROOK:
+    case BLACK_ROOK: {
+      return ROOK;
+      break;
+    }
+    case WHITE_BISHOP:
+    case BLACK_BISHOP: {
+      return BISHOP;
+      break;
+    }
+    case WHITE_KNIGHT:
+    case BLACK_KNIGHT: {
+      return KNIGHT;
+      break;
+    }
+    case WHITE_QUEEN:
+    case BLACK_QUEEN: {
+      return QUEEN;
+      break;
+    }
+    default:
+      return PAWN;
+      break;
+  }
+}
 std::vector<MoveContext> Bot::createCrazyHouse(int x, int y, PlaySide side) {
   std::vector<MoveContext> possibleMoves;
 
@@ -1273,8 +1314,7 @@ std::vector<MoveContext> Bot::createCrazyHouse(int x, int y, PlaySide side) {
 
     // Most likely it is not legal to simulate introducing a CrazyHouse piece by movien it
     // from (i, j) to (i, j)
-    MoveContext newMove(this, Move::moveTo(getPosition(x, y),
-                        getPosition(x, y)));
+    MoveContext newMove(this, Move::dropIn(getPosition(x, y), convertPlaySidePiece(piece)));
     newMove.currentBoard[x][y] = piece;
 
     if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {

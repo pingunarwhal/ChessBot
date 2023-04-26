@@ -167,7 +167,9 @@ class Bot {
   std::vector<MoveContext> createCrazyHouse(int x, int y, PlaySide side);
 
   void showBoard(PlaySidePiece gameBoard[TABLE_SIZE + 1][TABLE_SIZE + 1]);
-  
+
+  Piece convertPlaySidePiece(PlaySidePiece piece);  
+
   static std::string getBotName();
 };
 
