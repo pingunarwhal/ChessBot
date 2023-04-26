@@ -296,8 +296,42 @@ int main() {
   // }
 
   /* test module */
-  Bot myBot;
-  myBot.calculateNextMove();
-  myBot.showBoard(myBot.gameBoard);
+  Bot* myBot = new Bot();
+  engineSide = BLACK;
+
+  /* starting simple position -- we can comment this if we play full game */
+  for (int i = 1; i <= 8; i++) {
+    for (int j = 1; j <= 8; j++) {
+      myBot->gameBoard[i][j] = NO_PIECE;
+    }
+  }
+
+  /* here you just put your initial pieces for testing */
+  myBot->gameBoard[1][1] = WHITE_ROOK;
+  myBot->gameBoard[1][5] = WHITE_KING;
+  myBot->gameBoard[8][5] = BLACK_KING;
+  myBot->gameBoard[8][8] = BLACK_ROOK;
+  myBot->shortCastle = CAN_CASTLE;
+  myBot->longCastle = NO_CASTLE;
+
+  myBot->showBoard(myBot->gameBoard);
+
+  char move_string[64];
+  std::cin >> move_string;
+
+  /* example move_string normal e4e5 */
+  /* example move_string promotion e7e8q - queen at e8*/
+  /* example move_string drop in @e4Q - queen dropped at e8 */
+
+  while (strcmp(move_string, "null") != 0) {
+    Move *move = deserializeMove(move_string);
+    myBot->recordMove(move, engineSide);
+    myBot->showBoard(myBot->gameBoard);
+    myBot->calculateNextMove();
+    myBot->showBoard(myBot->gameBoard);
+    std::cin >> move_string;
+  }
+
+
   return 0;
 }
