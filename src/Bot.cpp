@@ -1402,7 +1402,9 @@ Move *Bot::calculateNextMove() {
         break;
       }
       case WHITE_QUEEN:
-      case BLACK_QUEEN: {
+      case BLACK_QUEEN:
+      case P_WHITE_QUEEN:
+      case P_BLACK_QUEEN: {
         std::vector<MoveContext> queenMoves = queen_moves(i, j, engineSide);
         possibleMoves.insert(possibleMoves.end(), queenMoves.begin(),
                              queenMoves.end());
