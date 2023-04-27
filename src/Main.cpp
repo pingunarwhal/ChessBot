@@ -11,6 +11,10 @@
 static PlaySide sideToMove;
 PlaySide engineSide;
 
+PlaySide getEngineSide() {
+  return engineSide;
+}
+
 static void toggleSideToMove() {
     static const PlaySide switchTable[] = {
         [BLACK] = WHITE,
@@ -180,7 +184,8 @@ class EngineComponents {
       std::cout << "\n";
 
       getline(scanner, command);
-      assert(command.rfind("protover", 0) == 0);
+      assert(command.rfind("protover ", 0) == 0 && "PROTOCOL ERROR: EXPECTED PROTOVER CMD");
+      assert(command.at(strlen("protover ")) == '2' && "PROTOCOL ERROR: PROTOCOL VER != 2");
 
       /* Respond with features */
       std::string features = constructFeaturesPayload();
@@ -228,12 +233,24 @@ class EngineComponents {
   }
 
   void processIncomingMove(Move *move) {
-    if (state.value() == FORCE_MODE || state.value() == RECV_NEW) {
+    if (state.value() == FORCE_MODE) {
       bot.value()->recordMove(move, sideToMove);
       toggleSideToMove();
     } else if (state.value() == PLAYING) {
       bot.value()->recordMove(move, sideToMove);
       toggleSideToMove();
+
+      Move *response = bot.value()->calculateNextMove();
+      emitMove(response);
+
+      delete response;
+      toggleSideToMove();
+    } else if (state.value() == RECV_NEW) {
+      state = EngineState::PLAYING;
+
+      bot.value()->recordMove(move, sideToMove);
+      toggleSideToMove();
+      engineSide = sideToMove;
 
       Move *response = bot.value()->calculateNextMove();
       emitMove(response);
@@ -286,51 +303,13 @@ class EngineComponents {
 };
 
 int main() {
-  // EngineComponents* engine = new EngineComponents();
-  // engine->performHandshake();
+  EngineComponents* engine = new EngineComponents();
+  engine->performHandshake();
 
-  // while (true) {
-  //   /* Fetch and execute next command */
+  while (true) {
+    /* Fetch and execute next command */
 
-  //   engine->executeOneCommand();
-  // }
-
-  /* test module */
-  Bot* myBot = new Bot();
-  engineSide = BLACK;
-
-  // /* starting simple position -- we can comment this if we play full game */
-  // for (int i = 1; i <= 8; i++) {
-  //   for (int j = 1; j <= 8; j++) {
-  //     myBot->gameBoard[i][j] = NO_PIECE;
-  //   }
-  // }
-
-  // /* here you just put your initial pieces for testing */
-  // myBot->gameBoard[1][1] = WHITE_QUEEN;
-  // myBot->gameBoard[1][5] = WHITE_KING;
-  // myBot->gameBoard[8][5] = BLACK_KING;
-  // myBot->gameBoard[8][8] = BLACK_QUEEN;
-  // myBot->shortCastle = NO_CASTLE;
-  // myBot->longCastle = NO_CASTLE;
-
-  myBot->showBoard(myBot->gameBoard);
-
-  char move_string[64];
-  std::cin >> move_string;
-
-  /* example move_string normal e4e5 */
-  /* example move_string promotion e7e8q - queen at e8*/
-  /* example move_string drop in @e4Q - queen dropped at e8 */
-
-  while (strcmp(move_string, "null") != 0) {
-    Move *move = deserializeMove(move_string);
-    myBot->recordMove(move, engineSide);
-    myBot->showBoard(myBot->gameBoard);
-    myBot->calculateNextMove();
-    myBot->showBoard(myBot->gameBoard);
-    std::cin >> move_string;
+    engine->executeOneCommand();
   }
-
   return 0;
 }
