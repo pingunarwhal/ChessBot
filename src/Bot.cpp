@@ -783,7 +783,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
     }
   }
 
-  if (y - 1 > 0 && gameBoard[x][y - 1] == WHITE_EN_PAS) {
+  if (y - 1 > 0 && gameBoard[x - 1][y] == NO_PIECE && gameBoard[x][y - 1] == WHITE_EN_PAS) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x - 1, y - 1)));
     newMove.myCapturedPieces.push_back(switchSide(x, y - 1));
@@ -795,7 +795,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
     }
   }
 
-  if (y + 1 <= TABLE_SIZE && gameBoard[x][y + 1] == WHITE_EN_PAS) {
+  if (y + 1 <= TABLE_SIZE && gameBoard[x - 1][y] == NO_PIECE && gameBoard[x][y + 1] == WHITE_EN_PAS) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x - 1, y + 1)));
     newMove.myCapturedPieces.push_back(switchSide(x, y + 1));
