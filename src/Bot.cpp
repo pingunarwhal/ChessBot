@@ -338,6 +338,7 @@ bool Bot::checkKingSafety(PlaySide sideToMove) {
              checkKnightAttack(BLACK_KNIGHT, x_king, y_king) |
              checkBishopAttack(BLACK_BISHOP, x_king, y_king) |
              checkQueenAttack(BLACK_QUEEN, x_king, y_king) |
+             checkQueenAttack(P_BLACK_QUEEN, x_king, y_king) |
              checkKingAttack(BLACK_KING, x_king, y_king));
   } else {
     /* check for black king's safety */
@@ -348,6 +349,7 @@ bool Bot::checkKingSafety(PlaySide sideToMove) {
              checkKnightAttack(WHITE_KNIGHT, x_king, y_king) |
              checkBishopAttack(WHITE_BISHOP, x_king, y_king) |
              checkQueenAttack(WHITE_QUEEN, x_king, y_king) |
+             checkQueenAttack(P_WHITE_QUEEN, x_king, y_king) |
              checkKingAttack(WHITE_KING, x_king, y_king));
   }
 
@@ -494,14 +496,14 @@ void Bot::recordMove(Move *move, PlaySide sideToMove) {
   showBoard(gameBoard);
 
   int x_start, y_start, x_end, y_end;
-  getCoordinates(move->getSource().value(), x_start, y_start);
+
+  if (!move->isDropIn()) { 
+    getCoordinates(move->getSource().value(), x_start, y_start);
+  }
+
   getCoordinates(move->getDestination().value(), x_end, y_end);
 
   counterMoves++;
-
-  if (checkPawnOnBoard(x_start, y_start)) {
-    counterMoves = 0;
-  }
 
   if (gameBoard[x_end][y_end] != NO_PIECE) {
     enemyCapturesPieces.push_back(switchSide(x_end, y_end));
@@ -509,6 +511,10 @@ void Bot::recordMove(Move *move, PlaySide sideToMove) {
   }
 
   if (move->isNormal()) {
+    if (checkPawnOnBoard(x_start, y_start)) {
+      counterMoves = 0;
+    }
+
     if (!checkSpecialCases(sideToMove, x_start, y_start, x_end, y_end)) {
       gameBoard[x_end][y_end] = convertRegularPiece(x_start, y_start);
     }
@@ -517,6 +523,10 @@ void Bot::recordMove(Move *move, PlaySide sideToMove) {
   }
 
   if (move->isPromotion()) {
+    if (checkPawnOnBoard(x_start, y_start)) {
+      counterMoves = 0;
+    }
+
     gameBoard[x_end][y_end] = selectPiece(move->getReplacement().value(),
                                           sideToMove, false);
     gameBoard[x_start][y_start] = NO_PIECE;
@@ -1319,9 +1329,11 @@ Piece Bot::convertPlaySidePiece(PlaySidePiece piece) {
 std::vector<MoveContext> Bot::createCrazyHouse(int x, int y, PlaySide side) {
   std::vector<MoveContext> possibleMoves;
 
-  int counter = 0;
+  int counter = -1;
 
   for (auto & piece: myCapturedPieces) {
+    counter++;
+
     if ((x == 1 || x == 8) && (piece == WHITE_PAWN || piece == BLACK_PAWN)) {
       continue;
     }
@@ -1332,7 +1344,6 @@ std::vector<MoveContext> Bot::createCrazyHouse(int x, int y, PlaySide side) {
     newMove.currentBoard[x][y] = piece;
     newMove.myCapturedPieces.erase(newMove.myCapturedPieces.begin() + counter);
 
-    counter++;
     if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
       possibleMoves.push_back(newMove);
     }
@@ -1421,9 +1432,6 @@ Move *Bot::calculateNextMove() {
   int r = rand() % possibleMoves.size();
 
   /* overwrite current game table */
-  if (this->myCapturedPieces.size() != possibleMoves[r].myCapturedPieces.size()) {
-    fout << "OMG HE DID IT\n";
-  }
   this->myCapturedPieces = possibleMoves[r].myCapturedPieces;
   this->shortCastle = possibleMoves[r].shortCastle;
   this->longCastle = possibleMoves[r].longCastle;
@@ -1682,6 +1690,7 @@ bool MoveContext::checkKingSafety(PlaySide sideToMove) {
              checkKnightAttack(BLACK_KNIGHT, x_king, y_king) |
              checkBishopAttack(BLACK_BISHOP, x_king, y_king) |
              checkQueenAttack(BLACK_QUEEN, x_king, y_king) |
+             checkQueenAttack(P_BLACK_QUEEN, x_king, y_king) |
              checkKingAttack(BLACK_KING, x_king, y_king));
   } else {
     /* check for black king's safety */
@@ -1692,6 +1701,7 @@ bool MoveContext::checkKingSafety(PlaySide sideToMove) {
              checkKnightAttack(WHITE_KNIGHT, x_king, y_king) |
              checkBishopAttack(WHITE_BISHOP, x_king, y_king) |
              checkQueenAttack(WHITE_QUEEN, x_king, y_king) |
+             checkQueenAttack(P_WHITE_QUEEN, x_king, y_king) |
              checkKingAttack(WHITE_KING, x_king, y_king));
   }
 
