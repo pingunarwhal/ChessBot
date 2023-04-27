@@ -3,6 +3,7 @@
 #include <bits/stdc++.h>
 
 extern PlaySide engineSide;
+std::ofstream fout("output.txt");
 
 const std::string Bot::BOT_NAME = "MyBot"; /* Edit this, escaped characters are forbidden */
 
@@ -353,9 +354,17 @@ bool Bot::checkKingSafety(PlaySide sideToMove) {
   return true;
 }
 
-PlaySidePiece Bot::selectPiece(Piece piece, PlaySide enemySide) {
-  switch (enemySide) {
-    case WHITE:
+PlaySidePiece Bot::selectPiece(Piece piece, PlaySide mySide, bool type) {
+  if (!type) {
+    if (mySide == BLACK) {
+      return P_BLACK_QUEEN;
+    } else {
+      return P_WHITE_QUEEN;
+    }
+  }
+
+  switch (mySide) {
+    case BLACK:
       switch (piece) {
         case PAWN:
           return BLACK_PAWN;
@@ -372,7 +381,7 @@ PlaySidePiece Bot::selectPiece(Piece piece, PlaySide enemySide) {
       }
       break;
 
-    case BLACK:
+    case WHITE:
       switch (piece) {
         case PAWN:
           return WHITE_PAWN;
@@ -406,7 +415,7 @@ PlaySidePiece Bot::convertRegularPiece(int &x, int &y) {
   return gameBoard[x][y];
 }
 
-PlaySidePiece Bot::switchSide(int &x, int &y) {
+PlaySidePiece Bot::switchSide(int x, int y) {
   if (gameBoard[x][y] == BLACK_EN_PAS || gameBoard[x][y] == P_BLACK_ROOK ||
       gameBoard[x][y] == P_BLACK_BISHOP || gameBoard[x][y] == P_BLACK_KNIGHT ||
       gameBoard[x][y] == P_BLACK_QUEEN) {
@@ -481,6 +490,9 @@ bool Bot::checkRepeatedConfigs() {
 void Bot::recordMove(Move *move, PlaySide sideToMove) {
   /* You might find it useful to also separately
    * record last move in another custom field */
+
+  showBoard(gameBoard);
+
   int x_start, y_start, x_end, y_end;
   getCoordinates(move->getSource().value(), x_start, y_start);
   getCoordinates(move->getDestination().value(), x_end, y_end);
@@ -506,13 +518,13 @@ void Bot::recordMove(Move *move, PlaySide sideToMove) {
 
   if (move->isPromotion()) {
     gameBoard[x_end][y_end] = selectPiece(move->getReplacement().value(),
-                                          sideToMove);
+                                          sideToMove, false);
     gameBoard[x_start][y_start] = NO_PIECE;
   }
 
   if (move->isDropIn()) {
     gameBoard[x_end][y_end] = selectPiece(move->getReplacement().value(),
-                                          sideToMove);
+                                          sideToMove, true);
   }
 
   if (!checkKingSafety(sideToMove)) {
@@ -548,7 +560,7 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y, PlaySide side) {
 
   std::vector<MoveContext> possibleMoves;
 
-  if (x == 2 && gameBoard[x + 2][y] == NO_PIECE) {
+  if (x == 2 && gameBoard[x + 1][y] == NO_PIECE && gameBoard[x + 2][y] == NO_PIECE) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x + 2, y)));
     newMove.currentBoard[x][y] = NO_PIECE;
@@ -616,7 +628,7 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y, PlaySide side) {
   if (y + 1 <= TABLE_SIZE && gameBoard[x + 1][y + 1] < NO_PIECE) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x + 1, y + 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x + 1][y + 1]);
+    newMove.myCapturedPieces.push_back(switchSide(x + 1, y + 1));
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y + 1] = WHITE_PAWN;
     if (newMove.checkKingSafety(BLACK)) {
@@ -627,7 +639,7 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y, PlaySide side) {
   if (y - 1 > 0 && gameBoard[x + 1][y - 1] < NO_PIECE) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x + 1, y - 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x + 1][y - 1]);
+    newMove.myCapturedPieces.push_back(switchSide(x + 1, y - 1));
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y - 1] = WHITE_PAWN;
     if (newMove.checkKingSafety(BLACK)) {
@@ -635,10 +647,10 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y, PlaySide side) {
     }
   }
 
-  if (y - 1 > 0 && gameBoard[x][y - 1] == BLACK_EN_PAS) {
+  if (y - 1 > 0 && gameBoard[x + 1][y] == NO_PIECE && gameBoard[x][y - 1] == BLACK_EN_PAS) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x + 1, y - 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x][y - 1]);
+    newMove.myCapturedPieces.push_back(switchSide(x, y - 1));
     newMove.currentBoard[x][y - 1] = NO_PIECE;
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y - 1] = WHITE_PAWN;
@@ -647,10 +659,10 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y, PlaySide side) {
     }
   }
 
-  if (y + 1 <= TABLE_SIZE && gameBoard[x][y + 1] == BLACK_EN_PAS) {
+  if (y + 1 <= TABLE_SIZE && gameBoard[x + 1][y] == NO_PIECE && gameBoard[x][y + 1] == BLACK_EN_PAS) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x + 1, y + 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x][y + 1]);
+    newMove.myCapturedPieces.push_back(switchSide(x, y + 1));
     newMove.currentBoard[x][y + 1] = NO_PIECE;
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x + 1][y + 1] = WHITE_PAWN;
@@ -659,7 +671,7 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y, PlaySide side) {
     }
   }
 
-  std::cout << "PAWN at: " << x << " " << y << ", has possible moves: " <<
+  fout << "PAWN at: " << x << " " << y << ", has possible moves: " <<
       possibleMoves.size() << std::endl;
 
   return possibleMoves;
@@ -676,7 +688,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
 
   std::vector<MoveContext> possibleMoves;
 
-  if (x == 7 && gameBoard[x - 2][y] == NO_PIECE) {
+  if (x == 7 && gameBoard[x - 1][y] == NO_PIECE && gameBoard[x - 2][y] == NO_PIECE) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x - 2, y)));
     newMove.currentBoard[x][y] = NO_PIECE;
@@ -742,7 +754,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
   if (y + 1 <= TABLE_SIZE && gameBoard[x - 1][y + 1] > NO_PIECE) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x - 1, y + 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x - 1][y + 1]);
+    newMove.myCapturedPieces.push_back(switchSide(x - 1, y + 1));
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y + 1] = BLACK_PAWN;
     if (newMove.checkKingSafety(WHITE)) {
@@ -753,7 +765,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
   if (y - 1 > 0 && gameBoard[x - 1][y - 1] > NO_PIECE) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x - 1, y - 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x - 1][y - 1]);
+    newMove.myCapturedPieces.push_back(switchSide(x - 1, y - 1));
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y - 1] = BLACK_PAWN;
     if (newMove.checkKingSafety(WHITE)) {
@@ -764,7 +776,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
   if (y - 1 > 0 && gameBoard[x][y - 1] == WHITE_EN_PAS) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x - 1, y - 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x][y - 1]);
+    newMove.myCapturedPieces.push_back(switchSide(x, y - 1));
     newMove.currentBoard[x][y - 1] = NO_PIECE;
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y - 1] = BLACK_PAWN;
@@ -776,7 +788,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
   if (y + 1 <= TABLE_SIZE && gameBoard[x][y + 1] == WHITE_EN_PAS) {
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                         getPosition(x - 1, y + 1)));
-    newMove.myCapturedPieces.push_back(gameBoard[x][y + 1]);
+    newMove.myCapturedPieces.push_back(switchSide(x, y + 1));
     newMove.currentBoard[x][y + 1] = NO_PIECE;
     newMove.currentBoard[x][y] = NO_PIECE;
     newMove.currentBoard[x - 1][y + 1] = BLACK_PAWN;
@@ -785,7 +797,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
     }
   }
 
-  std::cout << "PAWN at: " << x << " " << y << ", has possible moves: " <<
+  fout << "PAWN at: " << x << " " << y << ", has possible moves: " <<
           possibleMoves.size() << std::endl;
 
   return possibleMoves;
@@ -809,12 +821,12 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side) {
     }
 
     MoveContext newMove(this, Move::moveTo(getPosition(x, y),
-                        getPosition(x + 2, y + 1)));
+                        getPosition(x + dx[i], y + dy[i])));
 
     if (gameBoard[x + dx[i]][y + dy[i]] != NO_PIECE) {
       /* a piece on the desired spot => check if it can be captured or not */
       if (side == WHITE && gameBoard[x + dx[i]][y + dy[i]] < NO_PIECE) {
-        newMove.myCapturedPieces.push_back(gameBoard[x + dx[i]][y + dy[i]]);
+        newMove.myCapturedPieces.push_back(switchSide(x + dx[i], y + dy[i]));
         newMove.currentBoard[x][y] = NO_PIECE;
         newMove.currentBoard[x + dx[i]][y + dy[i]] = WHITE_KNIGHT;
         if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
@@ -823,7 +835,7 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side) {
       }
 
       if (side == BLACK && gameBoard[x + dx[i]][y + dy[i]] > NO_PIECE) {
-        newMove.myCapturedPieces.push_back(gameBoard[x + dx[i]][y + dy[i]]);
+        newMove.myCapturedPieces.push_back(switchSide(x + dx[i], y + dy[i]));
         newMove.currentBoard[x][y] = NO_PIECE;
         newMove.currentBoard[x + dx[i]][y + dy[i]] = BLACK_KNIGHT;
         if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
@@ -840,7 +852,7 @@ std::vector<MoveContext> Bot::moveKnight(int x, int y, PlaySide side) {
     }
   }
 
-  std::cout << "KNIGHT at: " << x << " " << y << ", has possible moves: " <<
+  fout << "KNIGHT at: " << x << " " << y << ", has possible moves: " <<
         possibleMoves.size() << std::endl;
 
   return possibleMoves;
@@ -871,7 +883,7 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side) {
 
     if (gameBoard[x + dx[i]][y + dy[i]] != NO_PIECE) {
       if (side == WHITE && gameBoard[x + dx[i]][y + dy[i]] < NO_PIECE) {
-        newMove.myCapturedPieces.push_back(gameBoard[x + dx[i]][y + dy[i]]);
+        newMove.myCapturedPieces.push_back(switchSide(x + dx[i], y + dy[i]));
         newMove.currentBoard[x + dx[i]][y + dy[i]] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y] = NO_PIECE;
 
@@ -881,7 +893,7 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side) {
       }
 
       if (side == BLACK && gameBoard[x + dx[i]][y + dy[i]] > NO_PIECE) {
-        newMove.myCapturedPieces.push_back(gameBoard[x + dx[i]][y + dy[i]]);
+        newMove.myCapturedPieces.push_back(switchSide(x + dx[i], y + dy[i]));
 
         newMove.currentBoard[x + dx[i]][y + dy[i]] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y] = NO_PIECE;
@@ -934,7 +946,7 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side) {
     }
   }
 
-  std::cout << "KING at: " << x << " " << y << ", has possible moves: " <<
+  fout << "KING at: " << x << " " << y << ", has possible moves: " <<
         possibleMoves.size() << std::endl;
 
   return possibleMoves;
@@ -952,7 +964,7 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side) {
     if (gameBoard[i][y] != NO_PIECE && gameBoard[i][y] * gameBoard[x][y] < 0) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                           getPosition(i, y)));
-      newMove.myCapturedPieces.push_back(gameBoard[i][y]);
+      newMove.myCapturedPieces.push_back(switchSide(i, y));
       newMove.currentBoard[i][y] = newMove.currentBoard[x][y];
       newMove.currentBoard[x][y] = NO_PIECE;
 
@@ -996,7 +1008,7 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side) {
     if (gameBoard[i][y] != NO_PIECE && gameBoard[i][y] * gameBoard[x][y] < 0) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                           getPosition(i, y)));
-      newMove.myCapturedPieces.push_back(gameBoard[i][y]);
+      newMove.myCapturedPieces.push_back(switchSide(i, y));
       newMove.currentBoard[i][y] = newMove.currentBoard[x][y];
       newMove.currentBoard[x][y] = NO_PIECE;
 
@@ -1041,7 +1053,7 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side) {
     if (gameBoard[x][i] != NO_PIECE && gameBoard[x][i] * gameBoard[x][y] < 0) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                           getPosition(x, i)));
-      newMove.myCapturedPieces.push_back(gameBoard[x][i]);
+      newMove.myCapturedPieces.push_back(switchSide(x, i));
       newMove.currentBoard[x][i] = newMove.currentBoard[x][y];
       newMove.currentBoard[x][y] = NO_PIECE;
 
@@ -1085,7 +1097,7 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side) {
     if (gameBoard[x][i] != NO_PIECE && gameBoard[x][i] * gameBoard[x][y] < 0) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                           getPosition(x, i)));
-      newMove.myCapturedPieces.push_back(gameBoard[x][i]);
+      newMove.myCapturedPieces.push_back(switchSide(x, i));
       newMove.currentBoard[x][i] = newMove.currentBoard[x][y];
       newMove.currentBoard[x][y] = NO_PIECE;
 
@@ -1123,7 +1135,7 @@ std::vector<MoveContext> Bot::rook_moves(int x, int y, PlaySide side) {
     }
   }
 
-  std::cout << "ROOK at: " << x << " " << y << ", has possible moves: " <<
+  fout << "ROOK at: " << x << " " << y << ", has possible moves: " <<
         moves.size() << std::endl;
 
   return moves;
@@ -1138,12 +1150,12 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side) {
   std::vector<MoveContext> moves;
 
   for (int i = 1; i + x <= TABLE_SIZE && i + y <= TABLE_SIZE; i++) { // up right
-    if (gameBoard[i + x][i + y] != NO_PIECE &&
-        gameBoard[i + x][i + y] * gameBoard[x][y] < 0) {
+    if (gameBoard[x + i][y + i] != NO_PIECE &&
+        gameBoard[x + i][y + i] * gameBoard[x][y] < 0) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y),
-                          getPosition(i + x, i + y)));
-      newMove.myCapturedPieces.push_back(gameBoard[i + x][i + y]);
-      newMove.currentBoard[i + x][i + y] = newMove.currentBoard[x][y];
+                          getPosition(x + i, y + i)));
+      newMove.myCapturedPieces.push_back(switchSide(x + i, y + i));
+      newMove.currentBoard[x + i][y + i] = newMove.currentBoard[x][y];
       newMove.currentBoard[x][y] = NO_PIECE;
 
       if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
@@ -1170,7 +1182,7 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side) {
         gameBoard[x - i][y + i] * gameBoard[x][y] < 0) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                           getPosition(x - i, y + i)));
-      newMove.myCapturedPieces.push_back(gameBoard[x - i][y + i]);
+      newMove.myCapturedPieces.push_back(switchSide(x - i, y + i));
       newMove.currentBoard[x - i][y + i] = newMove.currentBoard[x][y];
       newMove.currentBoard[x][y] = NO_PIECE;
       if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
@@ -1195,7 +1207,7 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side) {
         gameBoard[x + i][y - i] * gameBoard[x][y] < 0) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                           getPosition(x + i, y - i)));
-      newMove.myCapturedPieces.push_back(gameBoard[x + i][y - i]);
+      newMove.myCapturedPieces.push_back(switchSide(x + i, y - i));
       newMove.currentBoard[x + i][y - i] = newMove.currentBoard[x][y];
       newMove.currentBoard[x][y] = NO_PIECE;
       if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
@@ -1220,7 +1232,7 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side) {
         gameBoard[x - i][y - i] * gameBoard[x][y] < 0) {
       MoveContext newMove(this, Move::moveTo(getPosition(x, y),
                           getPosition(x - i, y - i)));
-      newMove.myCapturedPieces.push_back(gameBoard[x - i][y - i]);
+      newMove.myCapturedPieces.push_back(switchSide(x - i, y - i));
       newMove.currentBoard[x - i][y - i] = newMove.currentBoard[x][y];
       newMove.currentBoard[x][y] = NO_PIECE;
       if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
@@ -1240,7 +1252,7 @@ std::vector<MoveContext> Bot::bishop_moves(int x, int y, PlaySide side) {
     }
   }
 
-  std::cout << "BISHOP at: " << x << " " << y << ", has possible moves: " <<
+  fout << "BISHOP at: " << x << " " << y << ", has possible moves: " <<
         moves.size() << std::endl;
 
   return moves;
@@ -1257,7 +1269,7 @@ std::vector<MoveContext> Bot::queen_moves(int x, int y, PlaySide side) {
   queen_moves.insert(queen_moves.end(), queen_as_bishop_moves.begin(),
                      queen_as_bishop_moves.end());
 
-  std::cout << "QUEEN at: " << x << " " << y << ", has possible moves: " <<
+  fout << "QUEEN at: " << x << " " << y << ", has possible moves: " <<
         queen_moves.size() << std::endl;
 
   return queen_moves;
@@ -1307,6 +1319,8 @@ Piece Bot::convertPlaySidePiece(PlaySidePiece piece) {
 std::vector<MoveContext> Bot::createCrazyHouse(int x, int y, PlaySide side) {
   std::vector<MoveContext> possibleMoves;
 
+  int counter = 0;
+
   for (auto & piece: myCapturedPieces) {
     if ((x == 1 || x == 8) && (piece == WHITE_PAWN || piece == BLACK_PAWN)) {
       continue;
@@ -1316,7 +1330,9 @@ std::vector<MoveContext> Bot::createCrazyHouse(int x, int y, PlaySide side) {
     // from (i, j) to (i, j)
     MoveContext newMove(this, Move::dropIn(getPosition(x, y), convertPlaySidePiece(piece)));
     newMove.currentBoard[x][y] = piece;
+    newMove.myCapturedPieces.erase(newMove.myCapturedPieces.begin() + counter);
 
+    counter++;
     if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
       possibleMoves.push_back(newMove);
     }
@@ -1398,13 +1414,16 @@ Move *Bot::calculateNextMove() {
     }
   }
 
-  std::cout << possibleMoves.size() << std::endl;
+  fout << "Total possible moves: " << possibleMoves.size() << std::endl;
 
   srand(time(0));
 
   int r = rand() % possibleMoves.size();
 
   /* overwrite current game table */
+  if (this->myCapturedPieces.size() != possibleMoves[r].myCapturedPieces.size()) {
+    fout << "OMG HE DID IT\n";
+  }
   this->myCapturedPieces = possibleMoves[r].myCapturedPieces;
   this->shortCastle = possibleMoves[r].shortCastle;
   this->longCastle = possibleMoves[r].longCastle;
@@ -1414,6 +1433,8 @@ Move *Bot::calculateNextMove() {
       this->gameBoard[i][j] = possibleMoves[r].currentBoard[i][j];
     }
   }
+
+  showBoard(gameBoard);
 
   return possibleMoves[r].actualMove;
 }
@@ -1679,25 +1700,25 @@ bool MoveContext::checkKingSafety(PlaySide sideToMove) {
 
 void Bot::showBoard(PlaySidePiece gameBoard[TABLE_SIZE + 1][TABLE_SIZE + 1]) {
   /* that's how the chess table is usually seen */
-  std::cout << "board:\n";
+  fout << "board:\n";
   for (int i = TABLE_SIZE; i > 0; i--) {
     for (int j = 1; j <= TABLE_SIZE; j++) {
-      std::cout << gameBoard[i][j] << " ";
+      fout << gameBoard[i][j] << " ";
     }
-    std::cout << "\n";
+    fout << "\n";
   }
 
-  std::cout << "My captured Pieces: ";
+  fout << "My captured Pieces: ";
   for (auto& piece : myCapturedPieces) {
-    std::cout << piece << " ";
+    fout << piece << " ";
   }
 
-  std::cout << "\n";
+  fout << "\n";
 
-  std::cout << "Enemy captured Pieces: ";
+  fout << "Enemy captured Pieces: ";
   for (auto& piece : enemyCapturesPieces) {
-    std::cout << piece << " ";
+    fout << piece << " ";
   }
 
-  std::cout << "\n";
+  fout << "\n";
 }
