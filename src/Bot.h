@@ -131,12 +131,12 @@ class Bot {
   bool checkKingSafety(PlaySide sideToMove);
 
   /* select specific player side piece from a generic piece */
-  PlaySidePiece selectPiece(Piece piece, PlaySide enemySide);
+  PlaySidePiece selectPiece(Piece piece, PlaySide mySide, bool type);
   
   /* convert to regular piece an en passant pawn at the specified coords */
   PlaySidePiece convertRegularPiece(int &x, int &y);
 
-  PlaySidePiece switchSide(int &x, int &y);
+  PlaySidePiece switchSide(int x, int y);
 
   /* copy the current config in the pastConfigs vector */
   void copyCurrentConfig();
