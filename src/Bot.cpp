@@ -74,6 +74,10 @@ Move* Bot::calculateNextMove() {
 
     root.calculateAllNextMoves(engineSide);
 
+    if (root.castleNow) {
+        return root.castleMove->move;
+    }
+
     fout << "Total possible moves: " << root.possibleMoves.size() << std::endl;
 
     srand(time(0));

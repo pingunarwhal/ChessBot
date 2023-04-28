@@ -23,6 +23,7 @@ MoveNode::MoveNode(MoveNode *moveNode, Move *move) {
     this->kingInCheck = moveNode->kingInCheck;
     this->previousKingInCheck = moveNode->previousKingInCheck;
     this->counterMoves = moveNode->counterMoves;
+    this->castleNow = moveNode->castleNow;
 
     for (auto piece : moveNode->myCapturedPieces) {
         this->myCapturedPieces.push_back(piece);
@@ -47,6 +48,7 @@ MoveNode::MoveNode(MoveNode *moveNode) {
     this->kingInCheck = moveNode->kingInCheck;
     this->previousKingInCheck = moveNode->previousKingInCheck;
     this->counterMoves = moveNode->counterMoves;
+    this->castleNow = moveNode->castleNow;
 
     for (auto piece : moveNode->myCapturedPieces) {
         this->myCapturedPieces.push_back(piece);
@@ -65,6 +67,7 @@ MoveNode::MoveNode() {
     longCastle  = true;
     kingInCheck = false;
     previousKingInCheck = false;
+    castleNow = false;
     counterMoves = 0;
 }
 
@@ -428,7 +431,7 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
                 return true;
             }
 
-            if (y_start - 1 > 0 && y_end == y_start + 1 && x_end == x_start - 1
+            if (y_start - 1 > 0 && y_end == y_start - 1 && x_end == x_start - 1
                 && currentBoard[x_start][y_start - 1] == WHITE_EN_PAS) {
                 enemyCapturedPieces.push_back(switchSide(x_start, y_start - 1));
                 currentBoard[x_start][y_start - 1] = NO_PIECE;
@@ -457,7 +460,7 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
                 return true;
             }
 
-            if (y_start - 1 > 0 && y_end == y_start + 1 && x_end == x_start + 1
+            if (y_start - 1 > 0 && y_end == y_start - 1 && x_end == x_start + 1
                 && currentBoard[x_start][y_start - 1] == BLACK_EN_PAS) {
                 enemyCapturedPieces.push_back(switchSide(x_start, y_start - 1));
                 currentBoard[x_start][y_start - 1] = NO_PIECE;
@@ -500,21 +503,6 @@ void MoveNode::revertEnPassantBoard(PlaySide sideToMove) {
     }
 }
 
-PlaySidePiece MoveNode::revertEnPassant(int& x, int& y) {
-    /* convert a pawn from en passant marked pawn to regular pawn after one move
-     */
-    if (currentBoard[x][y] == BLACK_EN_PAS) {
-        return BLACK_PAWN;
-    }
-
-    if (currentBoard[x][y] == WHITE_EN_PAS) {
-        return WHITE_PAWN;
-    }
-
-    /* otherwise just return the current piece */
-    return currentBoard[x][y];
-}
-
 void MoveNode::removeCapturedPiece(PlaySidePiece piece) {
     int counter = 0;
 
@@ -552,7 +540,7 @@ void MoveNode::updateBoard(Move* move, PlaySide side) {
         }
 
         if (!checkSpecialCases(side, x_start, y_start, x_end, y_end)) {
-            currentBoard[x_end][y_end] = revertEnPassant(x_start, y_start);
+            currentBoard[x_end][y_end] = currentBoard[x_start][y_start];
         }
 
         currentBoard[x_start][y_start] = NO_PIECE;
@@ -1493,6 +1481,8 @@ void MoveNode::kingMoves(int x, int y, PlaySide side) {
 
         if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
             possibleMoves.push_back(newMove);
+            castleMove = &newMove;
+            castleNow = true;
         }
     }
 
@@ -1510,6 +1500,8 @@ void MoveNode::kingMoves(int x, int y, PlaySide side) {
 
         if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
             possibleMoves.push_back(newMove);
+            castleMove = &newMove;
+            castleNow = true;
         }
     }
 
@@ -1633,6 +1625,8 @@ void MoveNode::crazyHouseMoves(int x, int y, PlaySide side) {
 }
 
 void MoveNode::calculateAllNextMoves(PlaySide engineSide) {
+    castleNow = false;
+    
     for (int i = 1; i <= TABLE_SIZE; i++) {
         for (int j = 1; j <= TABLE_SIZE; j++) {
             switch (currentBoard[i][j]) {

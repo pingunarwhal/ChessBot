@@ -54,6 +54,9 @@ class MoveNode {
 
 		std::vector<MoveNode> possibleMoves;
 
+		MoveNode *castleMove;
+		bool castleNow;
+
 		MoveNode(MoveNode *moveNode, Move *move);
 		MoveNode(MoveNode *moveNode);
 		MoveNode();
@@ -93,8 +96,6 @@ class MoveNode {
 		bool checkSpecialCases(PlaySide sideToMove, int &x_start, int &y_start, int &x_end, int &y_end);
 
 		void revertEnPassantBoard(PlaySide sideToMove);
-
-		PlaySidePiece revertEnPassant(int &x, int &y);
 
 		void removeCapturedPiece(PlaySidePiece piece);
 
