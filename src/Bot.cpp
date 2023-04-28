@@ -97,6 +97,14 @@ bool Bot::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start,
                 return true;
             }
         }
+
+        /* enemy does en passant */
+        if (gameBoard[x_start][y_start] == BLACK_PAWN
+            && y_end != y_start) {
+              enemyCapturesPieces.push_back(switchSide(x_start, y_end));
+              gameBoard[x_start][y_end] = NO_PIECE;
+              return true;
+        }
     } else {
         /* White en passant from 2nd to 4th row */
         if (x_start == 2 && x_end == 4
@@ -108,6 +116,14 @@ bool Bot::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start,
                 gameBoard[x_end][y_end] = WHITE_EN_PAS;
                 return true;
             }
+        }
+
+        /* enemy does en passant */
+        if (gameBoard[x_start][y_start] == WHITE_PAWN
+            && y_end != y_start) {
+              enemyCapturesPieces.push_back(switchSide(x_start, y_end));
+              gameBoard[x_start][y_end] = NO_PIECE;
+              return true;
         }
     }
 
