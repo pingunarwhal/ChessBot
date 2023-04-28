@@ -14,6 +14,9 @@ DEPS := $(OBJS:.o=.d)
 
 all: $(PRGM)
 
+run: $(PRGM)
+	./$(PRGM)
+
 $(PRGM): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(LDLIBS) -o $@
 
