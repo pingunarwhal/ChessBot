@@ -600,39 +600,125 @@ std::vector<MoveContext> Bot::moveWhitePawn(int x, int y, PlaySide side) {
     }
 
     /* promote pawn */
-    if (x == 7 && gameBoard[x + 1][y] == NO_PIECE) {
-        /* set current position to NO_PIECE and push back all possible
-         * promotions */
-        MoveContext newMoveQ(this,
-            Move::promote(getPosition(x, y), getPosition(x + 1, y), QUEEN));
-        newMoveQ.currentBoard[x][y]     = NO_PIECE;
-        newMoveQ.currentBoard[x + 1][y] = WHITE_QUEEN;
-        if (newMoveQ.checkKingSafety(BLACK)) {
-            possibleMoves.push_back(newMoveQ);
+    if (x == 7) {
+        if (gameBoard[x + 1][y] == NO_PIECE) {
+            /* set current position to NO_PIECE and push back all possible
+            * promotions */
+            MoveContext newMoveQ(this,
+                Move::promote(getPosition(x, y), getPosition(x + 1, y), QUEEN));
+            newMoveQ.currentBoard[x][y]     = NO_PIECE;
+            newMoveQ.currentBoard[x + 1][y] = WHITE_QUEEN;
+            if (newMoveQ.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveQ);
+            }
+
+            MoveContext newMoveR(this,
+                Move::promote(getPosition(x, y), getPosition(x + 1, y), ROOK));
+            newMoveR.currentBoard[x][y]     = NO_PIECE;
+            newMoveR.currentBoard[x + 1][y] = WHITE_ROOK;
+            if (newMoveR.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveR);
+            }
+
+            MoveContext newMoveB(this,
+                Move::promote(getPosition(x, y), getPosition(x + 1, y), BISHOP));
+            newMoveB.currentBoard[x][y]     = NO_PIECE;
+            newMoveB.currentBoard[x + 1][y] = WHITE_BISHOP;
+            if (newMoveB.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveB);
+            }
+
+            MoveContext newMoveK(this,
+                Move::promote(getPosition(x, y), getPosition(x + 1, y), KNIGHT));
+            newMoveK.currentBoard[x][y]     = NO_PIECE;
+            newMoveK.currentBoard[x + 1][y] = WHITE_KNIGHT;
+            if (newMoveK.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveK);
+            }
         }
 
-        MoveContext newMoveR(this,
-            Move::promote(getPosition(x, y), getPosition(x + 1, y), ROOK));
-        newMoveR.currentBoard[x][y]     = NO_PIECE;
-        newMoveR.currentBoard[x + 1][y] = WHITE_ROOK;
-        if (newMoveR.checkKingSafety(BLACK)) {
-            possibleMoves.push_back(newMoveR);
+        if (y - 1 > 0 && gameBoard[x + 1][y - 1] < NO_PIECE) {
+            MoveContext newMoveQ(this, Move::promote(getPosition(x, y),
+                                           getPosition(x + 1, y - 1), QUEEN));
+            newMoveQ.myCapturedPieces.push_back(
+                switchSide(x + 1, y - 1));
+            newMoveQ.currentBoard[x][y]         = NO_PIECE;
+            newMoveQ.currentBoard[x + 1][y - 1] = WHITE_QUEEN;
+            if (newMoveQ.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveQ);
+            }
+
+            MoveContext newMoveR(this, Move::promote(getPosition(x, y),
+                                           getPosition(x + 1, y - 1), ROOK));
+            newMoveR.myCapturedPieces.push_back(
+                switchSide(x + 1, y - 1));
+            newMoveR.currentBoard[x][y]         = NO_PIECE;
+            newMoveR.currentBoard[x + 1][y - 1] = WHITE_ROOK;
+            if (newMoveR.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveR);
+            }
+
+            MoveContext newMoveB(this, Move::promote(getPosition(x, y),
+                                           getPosition(x + 1, y - 1), BISHOP));
+            newMoveB.myCapturedPieces.push_back(
+                switchSide(x + 1, y - 1));
+            newMoveB.currentBoard[x][y]         = NO_PIECE;
+            newMoveB.currentBoard[x + 1][y - 1] = WHITE_BISHOP;
+            if (newMoveB.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveB);
+            }
+
+            MoveContext newMoveK(this, Move::promote(getPosition(x, y),
+                                           getPosition(x + 1, y - 1), KNIGHT));
+            newMoveK.myCapturedPieces.push_back(
+                switchSide(x + 1, y - 1));
+            newMoveK.currentBoard[x][y]         = NO_PIECE;
+            newMoveK.currentBoard[x + 1][y - 1] = WHITE_KNIGHT;
+            if (newMoveK.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveK);
+            }
         }
 
-        MoveContext newMoveB(this,
-            Move::promote(getPosition(x, y), getPosition(x + 1, y), BISHOP));
-        newMoveB.currentBoard[x][y]     = NO_PIECE;
-        newMoveB.currentBoard[x + 1][y] = WHITE_BISHOP;
-        if (newMoveB.checkKingSafety(BLACK)) {
-            possibleMoves.push_back(newMoveB);
-        }
+        if (y + 1 <= TABLE_SIZE && gameBoard[x + 1][y + 1] > NO_PIECE) {
+            MoveContext newMoveQ(this, Move::promote(getPosition(x, y),
+                                           getPosition(x + 1, y + 1), QUEEN));
+            newMoveQ.myCapturedPieces.push_back(
+                switchSide(x + 1, y + 1));
+            newMoveQ.currentBoard[x][y]         = NO_PIECE;
+            newMoveQ.currentBoard[x + 1][y + 1] = WHITE_QUEEN;
+            if (newMoveQ.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveQ);
+            }
 
-        MoveContext newMoveK(this,
-            Move::promote(getPosition(x, y), getPosition(x + 1, y), KNIGHT));
-        newMoveK.currentBoard[x][y]     = NO_PIECE;
-        newMoveK.currentBoard[x + 1][y] = WHITE_KNIGHT;
-        if (newMoveK.checkKingSafety(BLACK)) {
-            possibleMoves.push_back(newMoveK);
+            MoveContext newMoveR(this, Move::promote(getPosition(x, y),
+                                           getPosition(x + 1, y + 1), ROOK));
+            newMoveR.myCapturedPieces.push_back(
+                switchSide(x + 1, y + 1));
+            newMoveR.currentBoard[x][y]         = NO_PIECE;
+            newMoveR.currentBoard[x + 1][y + 1] = WHITE_ROOK;
+            if (newMoveR.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveR);
+            }
+
+            MoveContext newMoveB(this, Move::promote(getPosition(x, y),
+                                           getPosition(x + 1, y + 1), BISHOP));
+            newMoveB.myCapturedPieces.push_back(
+                switchSide(x + 1, y + 1));
+            newMoveB.currentBoard[x][y]         = NO_PIECE;
+            newMoveB.currentBoard[x + 1][y + 1] = WHITE_BISHOP;
+            if (newMoveB.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveB);
+            }
+
+            MoveContext newMoveK(this, Move::promote(getPosition(x, y),
+                                           getPosition(x + 1, y + 1), KNIGHT));
+            newMoveK.myCapturedPieces.push_back(
+                switchSide(x + 1, y + 1));
+            newMoveK.currentBoard[x][y]         = NO_PIECE;
+            newMoveK.currentBoard[x + 1][y + 1] = WHITE_KNIGHT;
+            if (newMoveK.checkKingSafety(BLACK)) {
+                possibleMoves.push_back(newMoveK);
+            }
         }
     }
 
@@ -769,7 +855,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
             MoveContext newMoveQ(this, Move::promote(getPosition(x, y),
                                            getPosition(x - 1, y - 1), QUEEN));
             newMoveQ.myCapturedPieces.push_back(
-                newMoveQ.currentBoard[x - 1][y - 1]);
+                switchSide(x - 1, y - 1));
             newMoveQ.currentBoard[x][y]         = NO_PIECE;
             newMoveQ.currentBoard[x - 1][y - 1] = BLACK_QUEEN;
             if (newMoveQ.checkKingSafety(WHITE)) {
@@ -779,7 +865,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
             MoveContext newMoveR(this, Move::promote(getPosition(x, y),
                                            getPosition(x - 1, y - 1), ROOK));
             newMoveR.myCapturedPieces.push_back(
-                newMoveR.currentBoard[x - 1][y - 1]);
+                switchSide(x - 1, y - 1));
             newMoveR.currentBoard[x][y]         = NO_PIECE;
             newMoveR.currentBoard[x - 1][y - 1] = BLACK_ROOK;
             if (newMoveR.checkKingSafety(WHITE)) {
@@ -789,7 +875,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
             MoveContext newMoveB(this, Move::promote(getPosition(x, y),
                                            getPosition(x - 1, y - 1), BISHOP));
             newMoveB.myCapturedPieces.push_back(
-                newMoveB.currentBoard[x - 1][y - 1]);
+                switchSide(x - 1, y - 1));
             newMoveB.currentBoard[x][y]         = NO_PIECE;
             newMoveB.currentBoard[x - 1][y - 1] = BLACK_BISHOP;
             if (newMoveB.checkKingSafety(WHITE)) {
@@ -799,7 +885,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
             MoveContext newMoveK(this, Move::promote(getPosition(x, y),
                                            getPosition(x - 1, y - 1), KNIGHT));
             newMoveK.myCapturedPieces.push_back(
-                newMoveK.currentBoard[x - 1][y - 1]);
+                switchSide(x - 1, y - 1));
             newMoveK.currentBoard[x][y]         = NO_PIECE;
             newMoveK.currentBoard[x - 1][y - 1] = BLACK_KNIGHT;
             if (newMoveK.checkKingSafety(WHITE)) {
@@ -811,7 +897,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
             MoveContext newMoveQ(this, Move::promote(getPosition(x, y),
                                            getPosition(x - 1, y + 1), QUEEN));
             newMoveQ.myCapturedPieces.push_back(
-                newMoveQ.currentBoard[x - 1][y + 1]);
+                switchSide(x - 1, y + 1));
             newMoveQ.currentBoard[x][y]         = NO_PIECE;
             newMoveQ.currentBoard[x - 1][y + 1] = BLACK_QUEEN;
             if (newMoveQ.checkKingSafety(WHITE)) {
@@ -821,7 +907,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
             MoveContext newMoveR(this, Move::promote(getPosition(x, y),
                                            getPosition(x - 1, y + 1), ROOK));
             newMoveR.myCapturedPieces.push_back(
-                newMoveR.currentBoard[x - 1][y + 1]);
+                switchSide(x - 1, y + 1));
             newMoveR.currentBoard[x][y]         = NO_PIECE;
             newMoveR.currentBoard[x - 1][y + 1] = BLACK_ROOK;
             if (newMoveR.checkKingSafety(WHITE)) {
@@ -831,7 +917,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
             MoveContext newMoveB(this, Move::promote(getPosition(x, y),
                                            getPosition(x - 1, y + 1), BISHOP));
             newMoveB.myCapturedPieces.push_back(
-                newMoveB.currentBoard[x - 1][y + 1]);
+                switchSide(x - 1, y + 1));
             newMoveB.currentBoard[x][y]         = NO_PIECE;
             newMoveB.currentBoard[x - 1][y + 1] = BLACK_BISHOP;
             if (newMoveB.checkKingSafety(WHITE)) {
@@ -841,7 +927,7 @@ std::vector<MoveContext> Bot::moveBlackPawn(int x, int y, PlaySide side) {
             MoveContext newMoveK(this, Move::promote(getPosition(x, y),
                                            getPosition(x - 1, y + 1), KNIGHT));
             newMoveK.myCapturedPieces.push_back(
-                newMoveK.currentBoard[x - 1][y + 1]);
+                switchSide(x - 1, y + 1));
             newMoveK.currentBoard[x][y]         = NO_PIECE;
             newMoveK.currentBoard[x - 1][y + 1] = BLACK_KNIGHT;
             if (newMoveK.checkKingSafety(WHITE)) {
@@ -1057,7 +1143,7 @@ std::vector<MoveContext> Bot::moveKing(int x, int y, PlaySide side) {
             Move::moveTo(getPosition(x, y), getPosition(x, y - 2)));
         newMove.currentBoard[x][y - 2] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y]     = NO_PIECE;
-        newMove.currentBoard[x][y + 1] = newMove.currentBoard[x][1];
+        newMove.currentBoard[x][y - 1] = newMove.currentBoard[x][1];
         newMove.currentBoard[x][1]     = NO_PIECE;
 
         newMove.shortCastle = NO_CASTLE;
