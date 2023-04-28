@@ -486,6 +486,20 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
     return false;
 }
 
+void MoveNode::revertEnPassantBoard(PlaySide sideToMove) {
+    for (int i = 1; i <= TABLE_SIZE; i++) {
+        for (int j = 1; j <= TABLE_SIZE; j++) {
+            if (currentBoard[i][j] == BLACK_EN_PAS && sideToMove == BLACK) {
+                currentBoard[i][j] = BLACK_PAWN;
+            }
+
+            if (currentBoard[i][j] == WHITE_EN_PAS && sideToMove == WHITE) {
+                currentBoard[i][j] = WHITE_PAWN;
+            }
+        }
+    }
+}
+
 PlaySidePiece MoveNode::revertEnPassant(int& x, int& y) {
     /* convert a pawn from en passant marked pawn to regular pawn after one move
      */
@@ -524,6 +538,8 @@ void MoveNode::updateBoard(Move* move, PlaySide side) {
     coordinatesPosition(move->getDestination().value(), x_end, y_end);
 
     counterMoves++;
+
+    revertEnPassantBoard(side);
 
     if (currentBoard[x_end][y_end] != NO_PIECE) {
         enemyCapturedPieces.push_back(switchSide(x_end, y_end));
