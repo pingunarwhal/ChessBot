@@ -428,6 +428,7 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
                 && currentBoard[x_start][y_start + 1] == WHITE_EN_PAS) {
                 enemyCapturedPieces.push_back(switchSide(x_start, y_start + 1));
                 currentBoard[x_start][y_start + 1] = NO_PIECE;
+                currentBoard[x_end][y_end] = currentBoard[x_start][y_start];
                 return true;
             }
 
@@ -435,6 +436,7 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
                 && currentBoard[x_start][y_start - 1] == WHITE_EN_PAS) {
                 enemyCapturedPieces.push_back(switchSide(x_start, y_start - 1));
                 currentBoard[x_start][y_start - 1] = NO_PIECE;
+                currentBoard[x_end][y_end] = currentBoard[x_start][y_start];
                 return true;
             }
         }
@@ -457,6 +459,7 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
                 && currentBoard[x_start][y_start + 1] == BLACK_EN_PAS) {
                 enemyCapturedPieces.push_back(switchSide(x_start, y_start + 1));
                 currentBoard[x_start][y_start + 1] = NO_PIECE;
+                currentBoard[x_end][y_end] = currentBoard[x_start][y_start];
                 return true;
             }
 
@@ -464,6 +467,7 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
                 && currentBoard[x_start][y_start - 1] == BLACK_EN_PAS) {
                 enemyCapturedPieces.push_back(switchSide(x_start, y_start - 1));
                 currentBoard[x_start][y_start - 1] = NO_PIECE;
+                currentBoard[x_end][y_end] = currentBoard[x_start][y_start];
                 return true;
             }
         }
