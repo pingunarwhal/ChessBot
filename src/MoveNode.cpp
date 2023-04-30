@@ -498,11 +498,11 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
 void MoveNode::revertEnPassantBoard(PlaySide sideToMove) {
     for (int i = 1; i <= TABLE_SIZE; i++) {
         for (int j = 1; j <= TABLE_SIZE; j++) {
-            if (currentBoard[i][j] == BLACK_EN_PAS && sideToMove == WHITE) {
+            if (currentBoard[i][j] == BLACK_EN_PAS && sideToMove == BLACK) {
                 currentBoard[i][j] = BLACK_PAWN;
             }
 
-            if (currentBoard[i][j] == WHITE_EN_PAS && sideToMove == BLACK) {
+            if (currentBoard[i][j] == WHITE_EN_PAS && sideToMove == WHITE) {
                 currentBoard[i][j] = WHITE_PAWN;
             }
         }
@@ -563,12 +563,13 @@ void MoveNode::updateBoard(Move* move, PlaySide side) {
     }
 
     if (move->isDropIn()) {
-        // TODO: remove dropped piece from enemy captured pieces
         currentBoard[x_end][y_end]
             = convertRegularPiece(move->getReplacement().value(), side, true);
 
         removeCapturedPiece(currentBoard[x_end][y_end]);
     }
+
+    revertEnPassantBoard(side == WHITE ? BLACK : WHITE);
 
     if (!checkKingSafety(side)) {
         previousKingInCheck = true;
