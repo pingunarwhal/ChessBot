@@ -458,7 +458,7 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
         /* enemy does en passant */
         if (currentBoard[x_start][y_start] == WHITE_PAWN) {
             if (y_start + 1 <= TABLE_SIZE && y_end == y_start + 1 && x_end == x_start + 1
-                && currentBoard[x_start][y_start + 1] == BLACK_EN_PAS) {
+                && currentBoard[x_start][y_start + 1] == BLACK_EN_PAS && currentBoard[x_end][y_end] == NO_PIECE) {
                 enemyCapturedPieces.push_back(switchSide(x_start, y_start + 1));
                 currentBoard[x_start][y_start + 1] = NO_PIECE;
                 currentBoard[x_end][y_end] = currentBoard[x_start][y_start];
@@ -466,7 +466,7 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
             }
 
             if (y_start - 1 > 0 && y_end == y_start - 1 && x_end == x_start + 1
-                && currentBoard[x_start][y_start - 1] == BLACK_EN_PAS) {
+                && currentBoard[x_start][y_start - 1] == BLACK_EN_PAS && currentBoard[x_end][y_end] == NO_PIECE) {
                 enemyCapturedPieces.push_back(switchSide(x_start, y_start - 1));
                 currentBoard[x_start][y_start - 1] = NO_PIECE;
                 currentBoard[x_end][y_end] = currentBoard[x_start][y_start];
@@ -498,11 +498,11 @@ bool MoveNode::checkSpecialCases(PlaySide sideToMove, int& x_start, int& y_start
 void MoveNode::revertEnPassantBoard(PlaySide sideToMove) {
     for (int i = 1; i <= TABLE_SIZE; i++) {
         for (int j = 1; j <= TABLE_SIZE; j++) {
-            if (currentBoard[i][j] == BLACK_EN_PAS && sideToMove == BLACK) {
+            if (currentBoard[i][j] == BLACK_EN_PAS && sideToMove == WHITE) {
                 currentBoard[i][j] = BLACK_PAWN;
             }
 
-            if (currentBoard[i][j] == WHITE_EN_PAS && sideToMove == WHITE) {
+            if (currentBoard[i][j] == WHITE_EN_PAS && sideToMove == BLACK) {
                 currentBoard[i][j] = WHITE_PAWN;
             }
         }
@@ -1309,18 +1309,23 @@ void MoveNode::kingMoves(int x, int y, PlaySide side) {
         && currentBoard[x][y + 2] == NO_PIECE) {
         MoveNode newMove(this,
             Move::moveTo(stringPosition(x, y), stringPosition(x, y + 2)));
-        newMove.currentBoard[x][y + 2] = newMove.currentBoard[x][y];
+        newMove.currentBoard[x][y + 1] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y]     = NO_PIECE;
-        newMove.currentBoard[x][y + 1] = newMove.currentBoard[x][TABLE_SIZE];
-        newMove.currentBoard[x][TABLE_SIZE] = NO_PIECE;
-
-        newMove.shortCastle = false;
-        newMove.longCastle  = false;
 
         if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
-            possibleMoves.push_back(newMove);
-            castleMoveIndex = possibleMoves.size() - 1;
-            castleNow = true;
+            
+            newMove.currentBoard[x][y + 2] = newMove.currentBoard[x][y + 1];
+            newMove.currentBoard[x][y + 1] = newMove.currentBoard[x][TABLE_SIZE];
+            newMove.currentBoard[x][TABLE_SIZE] = NO_PIECE;
+
+            newMove.shortCastle = false;
+            newMove.longCastle  = false;
+
+            if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
+                possibleMoves.push_back(newMove);
+                castleMoveIndex = possibleMoves.size() - 1;
+                castleNow = true;
+            }
         }
     }
 
@@ -1328,18 +1333,23 @@ void MoveNode::kingMoves(int x, int y, PlaySide side) {
         && currentBoard[x][y - 2] == NO_PIECE && currentBoard[x][y - 3] == NO_PIECE) {
         MoveNode newMove(this,
             Move::moveTo(stringPosition(x, y), stringPosition(x, y - 2)));
-        newMove.currentBoard[x][y - 2] = newMove.currentBoard[x][y];
+        newMove.currentBoard[x][y - 1] = newMove.currentBoard[x][y];
         newMove.currentBoard[x][y]     = NO_PIECE;
-        newMove.currentBoard[x][y - 1] = newMove.currentBoard[x][1];
-        newMove.currentBoard[x][1]     = NO_PIECE;
-
-        newMove.shortCastle = false;
-        newMove.longCastle  = false;
 
         if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
-            possibleMoves.push_back(newMove);
-            castleMoveIndex = possibleMoves.size() - 1;
-            castleNow = true;
+            
+            newMove.currentBoard[x][y - 2] = newMove.currentBoard[x][y - 1];
+            newMove.currentBoard[x][y - 1] = newMove.currentBoard[x][1];
+            newMove.currentBoard[x][1]     = NO_PIECE;
+
+            newMove.shortCastle = false;
+            newMove.longCastle  = false;
+
+            if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
+                possibleMoves.push_back(newMove);
+                castleMoveIndex = possibleMoves.size() - 1;
+                castleNow = true;
+            }
         }
     }
 
