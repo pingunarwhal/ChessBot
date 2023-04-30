@@ -628,30 +628,6 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             if (newMoveQ.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveQ);
             }
-
-            MoveNode newMoveR(this,
-                Move::promote(stringPosition(x, y), stringPosition(x + 1, y), ROOK));
-            newMoveR.currentBoard[x][y]     = NO_PIECE;
-            newMoveR.currentBoard[x + 1][y] = P_WHITE_ROOK;
-            if (newMoveR.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveR);
-            }
-
-            MoveNode newMoveB(this,
-                Move::promote(stringPosition(x, y), stringPosition(x + 1, y), BISHOP));
-            newMoveB.currentBoard[x][y]     = NO_PIECE;
-            newMoveB.currentBoard[x + 1][y] = P_WHITE_BISHOP;
-            if (newMoveB.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveB);
-            }
-
-            MoveNode newMoveK(this,
-                Move::promote(stringPosition(x, y), stringPosition(x + 1, y), KNIGHT));
-            newMoveK.currentBoard[x][y]     = NO_PIECE;
-            newMoveK.currentBoard[x + 1][y] = P_WHITE_KNIGHT;
-            if (newMoveK.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveK);
-            }
         }
 
         /* promotion + capture a piece */
@@ -665,36 +641,6 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             if (newMoveQ.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveQ);
             }
-
-            MoveNode newMoveR(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x + 1, y - 1), ROOK));
-            newMoveR.myCapturedPieces.push_back(
-                switchSide(x + 1, y - 1));
-            newMoveR.currentBoard[x][y]         = NO_PIECE;
-            newMoveR.currentBoard[x + 1][y - 1] = P_WHITE_ROOK;
-            if (newMoveR.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveR);
-            }
-
-            MoveNode newMoveB(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x + 1, y - 1), BISHOP));
-            newMoveB.myCapturedPieces.push_back(
-                switchSide(x + 1, y - 1));
-            newMoveB.currentBoard[x][y]         = NO_PIECE;
-            newMoveB.currentBoard[x + 1][y - 1] = P_WHITE_BISHOP;
-            if (newMoveB.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveB);
-            }
-
-            MoveNode newMoveK(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x + 1, y - 1), KNIGHT));
-            newMoveK.myCapturedPieces.push_back(
-                switchSide(x + 1, y - 1));
-            newMoveK.currentBoard[x][y]         = NO_PIECE;
-            newMoveK.currentBoard[x + 1][y - 1] = P_WHITE_KNIGHT;
-            if (newMoveK.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveK);
-            }
         }
 
         /* promotion + capture a piece */
@@ -707,36 +653,6 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveQ.currentBoard[x + 1][y + 1] = P_WHITE_QUEEN;
             if (newMoveQ.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveQ);
-            }
-
-            MoveNode newMoveR(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x + 1, y + 1), ROOK));
-            newMoveR.myCapturedPieces.push_back(
-                switchSide(x + 1, y + 1));
-            newMoveR.currentBoard[x][y]         = NO_PIECE;
-            newMoveR.currentBoard[x + 1][y + 1] = P_WHITE_ROOK;
-            if (newMoveR.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveR);
-            }
-
-            MoveNode newMoveB(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x + 1, y + 1), BISHOP));
-            newMoveB.myCapturedPieces.push_back(
-                switchSide(x + 1, y + 1));
-            newMoveB.currentBoard[x][y]         = NO_PIECE;
-            newMoveB.currentBoard[x + 1][y + 1] = P_WHITE_BISHOP;
-            if (newMoveB.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveB);
-            }
-
-            MoveNode newMoveK(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x + 1, y + 1), KNIGHT));
-            newMoveK.myCapturedPieces.push_back(
-                switchSide(x + 1, y + 1));
-            newMoveK.currentBoard[x][y]         = NO_PIECE;
-            newMoveK.currentBoard[x + 1][y + 1] = P_WHITE_KNIGHT;
-            if (newMoveK.checkKingSafety(BLACK)) {
-                possibleMoves.push_back(newMoveK);
             }
         }
     }
@@ -849,30 +765,6 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             if (newMoveQ.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveQ);
             }
-
-            MoveNode newMoveR(this,
-                Move::promote(stringPosition(x, y), stringPosition(x - 1, y), ROOK));
-            newMoveR.currentBoard[x][y]     = NO_PIECE;
-            newMoveR.currentBoard[x - 1][y] = P_BLACK_ROOK;
-            if (newMoveR.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveR);
-            }
-
-            MoveNode newMoveB(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x - 1, y), BISHOP));
-            newMoveB.currentBoard[x][y]     = NO_PIECE;
-            newMoveB.currentBoard[x - 1][y] = P_BLACK_BISHOP;
-            if (newMoveB.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveB);
-            }
-
-            MoveNode newMoveK(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x - 1, y), KNIGHT));
-            newMoveK.currentBoard[x][y]     = NO_PIECE;
-            newMoveK.currentBoard[x - 1][y] = P_BLACK_KNIGHT;
-            if (newMoveK.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveK);
-            }
         }
 
         /* promotion + capture a piece */
@@ -886,36 +778,6 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             if (newMoveQ.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveQ);
             }
-
-            MoveNode newMoveR(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x - 1, y - 1), ROOK));
-            newMoveR.myCapturedPieces.push_back(
-                switchSide(x - 1, y - 1));
-            newMoveR.currentBoard[x][y]         = NO_PIECE;
-            newMoveR.currentBoard[x - 1][y - 1] = P_BLACK_ROOK;
-            if (newMoveR.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveR);
-            }
-
-            MoveNode newMoveB(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x - 1, y - 1), BISHOP));
-            newMoveB.myCapturedPieces.push_back(
-                switchSide(x - 1, y - 1));
-            newMoveB.currentBoard[x][y]         = NO_PIECE;
-            newMoveB.currentBoard[x - 1][y - 1] = P_BLACK_BISHOP;
-            if (newMoveB.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveB);
-            }
-
-            MoveNode newMoveK(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x - 1, y - 1), KNIGHT));
-            newMoveK.myCapturedPieces.push_back(
-                switchSide(x - 1, y - 1));
-            newMoveK.currentBoard[x][y]         = NO_PIECE;
-            newMoveK.currentBoard[x - 1][y - 1] = P_BLACK_KNIGHT;
-            if (newMoveK.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveK);
-            }
         }
 
         /* promotion + capture a piece */
@@ -928,36 +790,6 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveQ.currentBoard[x - 1][y + 1] = P_BLACK_QUEEN;
             if (newMoveQ.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveQ);
-            }
-
-            MoveNode newMoveR(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x - 1, y + 1), ROOK));
-            newMoveR.myCapturedPieces.push_back(
-                switchSide(x - 1, y + 1));
-            newMoveR.currentBoard[x][y]         = NO_PIECE;
-            newMoveR.currentBoard[x - 1][y + 1] = P_BLACK_ROOK;
-            if (newMoveR.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveR);
-            }
-
-            MoveNode newMoveB(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x - 1, y + 1), BISHOP));
-            newMoveB.myCapturedPieces.push_back(
-                switchSide(x - 1, y + 1));
-            newMoveB.currentBoard[x][y]         = NO_PIECE;
-            newMoveB.currentBoard[x - 1][y + 1] = P_BLACK_BISHOP;
-            if (newMoveB.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveB);
-            }
-
-            MoveNode newMoveK(this, Move::promote(stringPosition(x, y),
-                                           stringPosition(x - 1, y + 1), KNIGHT));
-            newMoveK.myCapturedPieces.push_back(
-                switchSide(x - 1, y + 1));
-            newMoveK.currentBoard[x][y]         = NO_PIECE;
-            newMoveK.currentBoard[x - 1][y + 1] = P_BLACK_KNIGHT;
-            if (newMoveK.checkKingSafety(WHITE)) {
-                possibleMoves.push_back(newMoveK);
             }
         }
     }
