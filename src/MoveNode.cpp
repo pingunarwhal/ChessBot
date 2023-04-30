@@ -1530,9 +1530,31 @@ PlaySidePiece convertRegularPiece(Piece piece, PlaySide mySide, bool type) {
     /* type = false -> promotion */
     if (!type) {
         if (mySide == BLACK) {
-            return P_BLACK_QUEEN;
+            switch (piece) {
+                case QUEEN:
+                    return P_BLACK_QUEEN;
+                case ROOK:
+                    return P_BLACK_ROOK;
+                case BISHOP:
+                    return P_BLACK_BISHOP;
+                case KNIGHT:
+                    return P_BLACK_KNIGHT;
+                default:
+                    return NO_PIECE;
+            }
         } else {
-            return P_WHITE_QUEEN;
+            switch (piece) {
+                case QUEEN:
+                    return P_WHITE_QUEEN;
+                case ROOK:
+                    return P_WHITE_ROOK;
+                case BISHOP:
+                    return P_WHITE_BISHOP;
+                case KNIGHT:
+                    return P_WHITE_KNIGHT;
+                default:
+                    return NO_PIECE;
+            }
         }
     }
 
