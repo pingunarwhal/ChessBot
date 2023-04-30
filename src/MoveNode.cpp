@@ -644,7 +644,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
         }
 
         /* promotion + capture a piece */
-        if (y + 1 <= TABLE_SIZE && currentBoard[x + 1][y + 1] > NO_PIECE) {
+        if (y + 1 <= TABLE_SIZE && currentBoard[x + 1][y + 1] < NO_PIECE) {
             MoveNode newMoveQ(this, Move::promote(stringPosition(x, y),
                                            stringPosition(x + 1, y + 1), QUEEN));
             newMoveQ.myCapturedPieces.push_back(
