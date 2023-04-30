@@ -54,7 +54,7 @@ class MoveNode {
 
 		std::vector<MoveNode> possibleMoves;
 
-		MoveNode *castleMove;
+		int castleMoveIndex;
 		bool castleNow;
 
 		MoveNode(MoveNode *moveNode, Move *move);

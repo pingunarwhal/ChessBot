@@ -2,6 +2,8 @@
 
 #include <bits/stdc++.h>
 
+extern std::ofstream fout;
+
 BoardConfig::BoardConfig(
     PlaySidePiece currentConfig[TABLE_SIZE + 1][TABLE_SIZE + 1]) {
     for (int i = 1; i <= TABLE_SIZE; i++) {
@@ -23,7 +25,7 @@ MoveNode::MoveNode(MoveNode *moveNode, Move *move) {
     this->kingInCheck = moveNode->kingInCheck;
     this->previousKingInCheck = moveNode->previousKingInCheck;
     this->counterMoves = moveNode->counterMoves;
-    this->castleNow = moveNode->castleNow;
+    this->castleNow = false;
 
     for (auto piece : moveNode->myCapturedPieces) {
         this->myCapturedPieces.push_back(piece);
@@ -48,7 +50,7 @@ MoveNode::MoveNode(MoveNode *moveNode) {
     this->kingInCheck = moveNode->kingInCheck;
     this->previousKingInCheck = moveNode->previousKingInCheck;
     this->counterMoves = moveNode->counterMoves;
-    this->castleNow = moveNode->castleNow;
+    this->castleNow = false;
 
     for (auto piece : moveNode->myCapturedPieces) {
         this->myCapturedPieces.push_back(piece);
@@ -622,7 +624,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             MoveNode newMoveQ(this,
                 Move::promote(stringPosition(x, y), stringPosition(x + 1, y), QUEEN));
             newMoveQ.currentBoard[x][y]     = NO_PIECE;
-            newMoveQ.currentBoard[x + 1][y] = WHITE_QUEEN;
+            newMoveQ.currentBoard[x + 1][y] = P_WHITE_QUEEN;
             if (newMoveQ.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveQ);
             }
@@ -630,7 +632,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             MoveNode newMoveR(this,
                 Move::promote(stringPosition(x, y), stringPosition(x + 1, y), ROOK));
             newMoveR.currentBoard[x][y]     = NO_PIECE;
-            newMoveR.currentBoard[x + 1][y] = WHITE_ROOK;
+            newMoveR.currentBoard[x + 1][y] = P_WHITE_ROOK;
             if (newMoveR.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveR);
             }
@@ -638,7 +640,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             MoveNode newMoveB(this,
                 Move::promote(stringPosition(x, y), stringPosition(x + 1, y), BISHOP));
             newMoveB.currentBoard[x][y]     = NO_PIECE;
-            newMoveB.currentBoard[x + 1][y] = WHITE_BISHOP;
+            newMoveB.currentBoard[x + 1][y] = P_WHITE_BISHOP;
             if (newMoveB.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveB);
             }
@@ -646,7 +648,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             MoveNode newMoveK(this,
                 Move::promote(stringPosition(x, y), stringPosition(x + 1, y), KNIGHT));
             newMoveK.currentBoard[x][y]     = NO_PIECE;
-            newMoveK.currentBoard[x + 1][y] = WHITE_KNIGHT;
+            newMoveK.currentBoard[x + 1][y] = P_WHITE_KNIGHT;
             if (newMoveK.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveK);
             }
@@ -659,7 +661,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveQ.myCapturedPieces.push_back(
                 switchSide(x + 1, y - 1));
             newMoveQ.currentBoard[x][y]         = NO_PIECE;
-            newMoveQ.currentBoard[x + 1][y - 1] = WHITE_QUEEN;
+            newMoveQ.currentBoard[x + 1][y - 1] = P_WHITE_QUEEN;
             if (newMoveQ.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveQ);
             }
@@ -669,7 +671,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveR.myCapturedPieces.push_back(
                 switchSide(x + 1, y - 1));
             newMoveR.currentBoard[x][y]         = NO_PIECE;
-            newMoveR.currentBoard[x + 1][y - 1] = WHITE_ROOK;
+            newMoveR.currentBoard[x + 1][y - 1] = P_WHITE_ROOK;
             if (newMoveR.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveR);
             }
@@ -679,7 +681,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveB.myCapturedPieces.push_back(
                 switchSide(x + 1, y - 1));
             newMoveB.currentBoard[x][y]         = NO_PIECE;
-            newMoveB.currentBoard[x + 1][y - 1] = WHITE_BISHOP;
+            newMoveB.currentBoard[x + 1][y - 1] = P_WHITE_BISHOP;
             if (newMoveB.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveB);
             }
@@ -689,7 +691,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveK.myCapturedPieces.push_back(
                 switchSide(x + 1, y - 1));
             newMoveK.currentBoard[x][y]         = NO_PIECE;
-            newMoveK.currentBoard[x + 1][y - 1] = WHITE_KNIGHT;
+            newMoveK.currentBoard[x + 1][y - 1] = P_WHITE_KNIGHT;
             if (newMoveK.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveK);
             }
@@ -702,7 +704,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveQ.myCapturedPieces.push_back(
                 switchSide(x + 1, y + 1));
             newMoveQ.currentBoard[x][y]         = NO_PIECE;
-            newMoveQ.currentBoard[x + 1][y + 1] = WHITE_QUEEN;
+            newMoveQ.currentBoard[x + 1][y + 1] = P_WHITE_QUEEN;
             if (newMoveQ.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveQ);
             }
@@ -712,7 +714,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveR.myCapturedPieces.push_back(
                 switchSide(x + 1, y + 1));
             newMoveR.currentBoard[x][y]         = NO_PIECE;
-            newMoveR.currentBoard[x + 1][y + 1] = WHITE_ROOK;
+            newMoveR.currentBoard[x + 1][y + 1] = P_WHITE_ROOK;
             if (newMoveR.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveR);
             }
@@ -722,7 +724,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveB.myCapturedPieces.push_back(
                 switchSide(x + 1, y + 1));
             newMoveB.currentBoard[x][y]         = NO_PIECE;
-            newMoveB.currentBoard[x + 1][y + 1] = WHITE_BISHOP;
+            newMoveB.currentBoard[x + 1][y + 1] = P_WHITE_BISHOP;
             if (newMoveB.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveB);
             }
@@ -732,7 +734,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             newMoveK.myCapturedPieces.push_back(
                 switchSide(x + 1, y + 1));
             newMoveK.currentBoard[x][y]         = NO_PIECE;
-            newMoveK.currentBoard[x + 1][y + 1] = WHITE_KNIGHT;
+            newMoveK.currentBoard[x + 1][y + 1] = P_WHITE_KNIGHT;
             if (newMoveK.checkKingSafety(BLACK)) {
                 possibleMoves.push_back(newMoveK);
             }
@@ -804,7 +806,7 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
         }
     }
 
-    std::cout << "PAWN at: " << x << " " << y
+    fout << "PAWN at: " << x << " " << y
          << ", has possible moves: " << possibleMoves.size() << "\n";
 }
 
@@ -843,7 +845,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             MoveNode newMoveQ(this,
                 Move::promote(stringPosition(x, y), stringPosition(x - 1, y), QUEEN));
             newMoveQ.currentBoard[x][y]     = NO_PIECE;
-            newMoveQ.currentBoard[x - 1][y] = BLACK_QUEEN;
+            newMoveQ.currentBoard[x - 1][y] = P_BLACK_QUEEN;
             if (newMoveQ.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveQ);
             }
@@ -851,7 +853,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             MoveNode newMoveR(this,
                 Move::promote(stringPosition(x, y), stringPosition(x - 1, y), ROOK));
             newMoveR.currentBoard[x][y]     = NO_PIECE;
-            newMoveR.currentBoard[x - 1][y] = BLACK_ROOK;
+            newMoveR.currentBoard[x - 1][y] = P_BLACK_ROOK;
             if (newMoveR.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveR);
             }
@@ -859,7 +861,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             MoveNode newMoveB(this, Move::promote(stringPosition(x, y),
                                            stringPosition(x - 1, y), BISHOP));
             newMoveB.currentBoard[x][y]     = NO_PIECE;
-            newMoveB.currentBoard[x - 1][y] = BLACK_BISHOP;
+            newMoveB.currentBoard[x - 1][y] = P_BLACK_BISHOP;
             if (newMoveB.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveB);
             }
@@ -867,7 +869,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             MoveNode newMoveK(this, Move::promote(stringPosition(x, y),
                                            stringPosition(x - 1, y), KNIGHT));
             newMoveK.currentBoard[x][y]     = NO_PIECE;
-            newMoveK.currentBoard[x - 1][y] = BLACK_KNIGHT;
+            newMoveK.currentBoard[x - 1][y] = P_BLACK_KNIGHT;
             if (newMoveK.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveK);
             }
@@ -880,7 +882,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveQ.myCapturedPieces.push_back(
                 switchSide(x - 1, y - 1));
             newMoveQ.currentBoard[x][y]         = NO_PIECE;
-            newMoveQ.currentBoard[x - 1][y - 1] = BLACK_QUEEN;
+            newMoveQ.currentBoard[x - 1][y - 1] = P_BLACK_QUEEN;
             if (newMoveQ.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveQ);
             }
@@ -890,7 +892,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveR.myCapturedPieces.push_back(
                 switchSide(x - 1, y - 1));
             newMoveR.currentBoard[x][y]         = NO_PIECE;
-            newMoveR.currentBoard[x - 1][y - 1] = BLACK_ROOK;
+            newMoveR.currentBoard[x - 1][y - 1] = P_BLACK_ROOK;
             if (newMoveR.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveR);
             }
@@ -900,7 +902,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveB.myCapturedPieces.push_back(
                 switchSide(x - 1, y - 1));
             newMoveB.currentBoard[x][y]         = NO_PIECE;
-            newMoveB.currentBoard[x - 1][y - 1] = BLACK_BISHOP;
+            newMoveB.currentBoard[x - 1][y - 1] = P_BLACK_BISHOP;
             if (newMoveB.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveB);
             }
@@ -910,7 +912,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveK.myCapturedPieces.push_back(
                 switchSide(x - 1, y - 1));
             newMoveK.currentBoard[x][y]         = NO_PIECE;
-            newMoveK.currentBoard[x - 1][y - 1] = BLACK_KNIGHT;
+            newMoveK.currentBoard[x - 1][y - 1] = P_BLACK_KNIGHT;
             if (newMoveK.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveK);
             }
@@ -923,7 +925,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveQ.myCapturedPieces.push_back(
                 switchSide(x - 1, y + 1));
             newMoveQ.currentBoard[x][y]         = NO_PIECE;
-            newMoveQ.currentBoard[x - 1][y + 1] = BLACK_QUEEN;
+            newMoveQ.currentBoard[x - 1][y + 1] = P_BLACK_QUEEN;
             if (newMoveQ.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveQ);
             }
@@ -933,7 +935,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveR.myCapturedPieces.push_back(
                 switchSide(x - 1, y + 1));
             newMoveR.currentBoard[x][y]         = NO_PIECE;
-            newMoveR.currentBoard[x - 1][y + 1] = BLACK_ROOK;
+            newMoveR.currentBoard[x - 1][y + 1] = P_BLACK_ROOK;
             if (newMoveR.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveR);
             }
@@ -943,7 +945,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveB.myCapturedPieces.push_back(
                 switchSide(x - 1, y + 1));
             newMoveB.currentBoard[x][y]         = NO_PIECE;
-            newMoveB.currentBoard[x - 1][y + 1] = BLACK_BISHOP;
+            newMoveB.currentBoard[x - 1][y + 1] = P_BLACK_BISHOP;
             if (newMoveB.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveB);
             }
@@ -953,7 +955,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             newMoveK.myCapturedPieces.push_back(
                 switchSide(x - 1, y + 1));
             newMoveK.currentBoard[x][y]         = NO_PIECE;
-            newMoveK.currentBoard[x - 1][y + 1] = BLACK_KNIGHT;
+            newMoveK.currentBoard[x - 1][y + 1] = P_BLACK_KNIGHT;
             if (newMoveK.checkKingSafety(WHITE)) {
                 possibleMoves.push_back(newMoveK);
             }
@@ -1025,7 +1027,7 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
         }
     }
 
-    std::cout << "PAWN at: " << x << " " << y
+    fout << "PAWN at: " << x << " " << y
          << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
@@ -1215,7 +1217,7 @@ void MoveNode::rookMoves(int x, int y, PlaySide side) {
         }
     }
 
-    std::cout << "ROOK at: " << x << " " << y
+    fout << "ROOK at: " << x << " " << y
          << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
@@ -1270,7 +1272,7 @@ void MoveNode::knightMoves(int x, int y, PlaySide side) {
         }
     }
 
-    std::cout << "KNIGHT at: " << x << " " << y
+    fout << "KNIGHT at: " << x << " " << y
          << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
@@ -1397,7 +1399,7 @@ void MoveNode::bishopMoves(int x, int y, PlaySide side) {
         }
     }
 
-    std::cout << "BISHOP at: " << x << " " << y
+    fout << "BISHOP at: " << x << " " << y
          << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
@@ -1410,7 +1412,7 @@ void MoveNode::queenMoves(int x, int y, PlaySide side) {
     rookMoves(x, y, side);
     bishopMoves(x, y, side);
 
-    std::cout << "QUEEN at: " << x << " " << y
+    fout << "QUEEN at: " << x << " " << y
          << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
@@ -1485,7 +1487,7 @@ void MoveNode::kingMoves(int x, int y, PlaySide side) {
 
         if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
             possibleMoves.push_back(newMove);
-            castleMove = &newMove;
+            castleMoveIndex = possibleMoves.size() - 1;
             castleNow = true;
         }
     }
@@ -1504,12 +1506,12 @@ void MoveNode::kingMoves(int x, int y, PlaySide side) {
 
         if (newMove.checkKingSafety(side == WHITE ? BLACK : WHITE)) {
             possibleMoves.push_back(newMove);
-            castleMove = &newMove;
+            castleMoveIndex = possibleMoves.size() - 1;
             castleNow = true;
         }
     }
 
-    std::cout << "KING at: " << x << " " << y
+    fout << "KING at: " << x << " " << y
          << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 

@@ -10,128 +10,129 @@ recognized 'normal' (-1) as variant normal
 GameEnds(0, (null), 2)
 shuffleOpenings = 0
 StartChildProcess (dir=".") make run
-307 >first : xboard
+142 >first : xboard
 protover 2
-309 <first : ./Main
-311 <first : 
-311 <first : feature done=0 sigint=0 sigterm=0 san=0 reuse=0 usermove=1 analyze=0 ping=0 setboard=0 level=0 variants="crazyhouse" name="MyBot" myname="MyBot" done=1
-311 >first : accepted done
-311 >first : accepted sigint
-311 >first : accepted sigterm
-311 >first : accepted san
-311 >first : accepted reuse
-311 >first : accepted usermove
-311 >first : accepted analyze
-311 >first : accepted ping
-311 >first : accepted setboard
-311 >first : accepted level
-311 >first : accepted variants
-311 >first : accepted name
-311 >first : accepted myname
-311 >first : accepted done
+144 <first : ./Main
+145 <first : 
+145 <first : feature done=0 sigint=0 sigterm=0 san=0 reuse=0 usermove=1 analyze=0 ping=0 setboard=0 level=0 variants="crazyhouse" name="MyBot" myname="MyBot" done=1
+145 >first : accepted done
+145 >first : accepted sigint
+145 >first : accepted sigterm
+145 >first : accepted san
+145 >first : accepted reuse
+145 >first : accepted usermove
+145 >first : accepted analyze
+145 >first : accepted ping
+145 >first : accepted setboard
+145 >first : accepted level
+145 >first : accepted variants
+145 >first : accepted name
+145 >first : accepted myname
+145 >first : accepted done
 recognized 'crazyhouse' (-1) as variant crazyhouse
 Reset(1, 0) from gameMode 0
 recognized 'crazyhouse' (-1) as variant crazyhouse
 GameEnds(0, (null), 2)
-314 >first : quit
+147 >first : quit
 shuffleOpenings = 0
 StartChildProcess (dir=".") make run
-389 >first : xboard
+202 >first : xboard
 protover 2
-389 >first : new
+202 >first : new
 random
-389 >first : variant crazyhouse
-389 >first : level 40 5 0
-389 >first : post
-389 >first : hard
-391 <first : ./Main
-393 <first : 
-393 <first : feature done=0 sigint=0 sigterm=0 san=0 reuse=0 usermove=1 analyze=0 ping=0 setboard=0 level=0 variants="crazyhouse" name="MyBot" myname="MyBot" done=1
-393 >first : accepted done
-393 >first : accepted sigint
-393 >first : accepted sigterm
-393 >first : accepted san
-393 >first : accepted reuse
-393 >first : accepted usermove
-393 >first : accepted analyze
-393 >first : accepted ping
-393 >first : accepted setboard
-393 >first : accepted level
-393 >first : accepted variants
-393 >first : accepted name
-393 >first : accepted myname
-393 >first : accepted done
+202 >first : variant crazyhouse
+202 >first : level 40 5 0
+202 >first : post
+202 >first : hard
+207 <first : ./Main
+207 <first : 
+207 <first : feature done=0 sigint=0 sigterm=0 san=0 reuse=0 usermove=1 analyze=0 ping=0 setboard=0 level=0 variants="crazyhouse" name="MyBot" myname="MyBot" done=1
+207 >first : accepted done
+207 >first : accepted sigint
+207 >first : accepted sigterm
+207 >first : accepted san
+207 >first : accepted reuse
+207 >first : accepted usermove
+207 >first : accepted analyze
+207 >first : accepted ping
+207 >first : accepted setboard
+207 >first : accepted level
+207 >first : accepted variants
+207 >first : accepted name
+207 >first : accepted myname
+207 >first : accepted done
 nps: w=-1, b=-1
-26223 >first : name caty
+4755 >first : name rahovegas
 nps: w=-1, b=-1
-26224 >first : time 30000
-26224 >first : otim 30000
+4755 >first : time 30000
+4755 >first : otim 30000
 book hit = (NULL)
-26224 >first : usermove 26224 >first : e2e4
-26225 <first : move g8h6
-28806 >first : time 29999
-28806 >first : otim 29741
+4755 >first : usermove 4755 >first : e2e4
+4755 <first : PAWN at: 7 1, has possible moves: 2
+4755 <first : PAWN at: 7 2, has possible moves: 4
+4755 <first : PAWN at: 7 3, has possible moves: 6
+4755 <first : PAWN at: 7 4, has possible moves: 8
+4756 <first : PAWN at: 7 5, has possible moves: 10
+4756 <first : PAWN at: 7 6, has possible moves: 12
+4756 <first : PAWN at: 7 7, has possible moves: 14
+4756 <first : PAWN at: 7 8, has possible moves: 16
+4756 <first : ROOK at: 8 1, has possible moves: 16
+4756 <first : KNIGHT at: 8 2, has possible moves: 18
+4756 <first : BISHOP at: 8 3, has possible moves: 18
+4756 <first : ROOK at: 8 4, has possible moves: 18
+4756 <first : BISHOP at: 8 4, has possible moves: 18
+4756 <first : QUEEN at: 8 4, has possible moves: 18
+4756 <first : KING at: 8 5, has possible moves: 18
+4756 <first : BISHOP at: 8 6, has possible moves: 18
+4756 <first : KNIGHT at: 8 7, has possible moves: 20
+4756 <first : ROOK at: 8 8, has possible moves: 20
+4756 <first : move h7h6
+6563 >first : time 29999
+6563 >first : otim 29819
 book hit = (NULL)
-28806 >first : usermove 28806 >first : d1h5
-28807 <first : move e7e6
-30283 >first : time 29999
-30283 >first : otim 29594
+6563 >first : usermove 6563 >first : d2d4
+6564 <first : PAWN at: 6 8, has possible moves: 1
+6564 <first : PAWN at: 7 1, has possible moves: 3
+6564 <first : PAWN at: 7 2, has possible moves: 5
+6564 <first : PAWN at: 7 3, has possible moves: 7
+6564 <first : PAWN at: 7 4, has possible moves: 9
+6564 <first : PAWN at: 7 5, has possible moves: 11
+6564 <first : PAWN at: 7 6, has possible moves: 13
+6564 <first : PAWN at: 7 7, has possible moves: 15
+6564 <first : ROOK at: 8 1, has possible moves: 15
+6564 <first : KNIGHT at: 8 2, has possible moves: 17
+6564 <first : BISHOP at: 8 3, has possible moves: 17
+6564 <first : ROOK at: 8 4, has possible moves: 17
+6564 <first : BISHOP at: 8 4, has possible moves: 17
+6564 <first : QUEEN at: 8 4, has possible moves: 17
+6564 <first : KING at: 8 5, has possible moves: 17
+6564 <first : BISHOP at: 8 6, has possible moves: 17
+6564 <first : KNIGHT at: 8 7, has possible moves: 18
+6564 <first : ROOK at: 8 8, has possible moves: 19
+6564 <first : move d7d6
+8317 >first : time 29999
+8317 >first : otim 29644
 book hit = (NULL)
-30283 >first : usermove 30283 >first : h5h6
-30285 <first : move c7c5
-31967 >first : time 29999
-31967 >first : otim 29426
-book hit = (NULL)
-31967 >first : usermove 31967 >first : h6h7
-31968 <first : move d8f6
-33374 >first : time 29999
-33374 >first : otim 29285
-book hit = (NULL)
-33374 >first : usermove 33374 >first : h7h8
-33375 <first : move f6c3
-36156 >first : time 29999
-36156 >first : otim 29007
-book hit = (NULL)
-36156 >first : usermove 36156 >first : h8g7
-36157 <first : move c3a3
-38921 >first : time 29999
-38922 >first : otim 28731
-book hit = (NULL)
-38922 >first : usermove 38922 >first : g7f8
-38923 <first : move e8f8
-Drop move 19, curr=14, x=11,y=0, p=0
-LegalDrop: 0 @ 9,2)
-LegalDrop: 0 @ 9,2)
-43288 >first : time 29998
-43288 >first : otim 28294
-book hit = (NULL)
-43288 >first : usermove 43288 >first : P@h3
-43289 <first : move Q@h5
-LegalDrop: 70 @ 9,4)
-LegalDrop: 70 @ 9,4)
-Drop move 19, curr=16, x=11,y=1, p=1
-LegalDrop: 1 @ 8,2)
-LegalDrop: 1 @ 8,2)
-48278 >first : time 29998
-48278 >first : otim 27795
-book hit = (NULL)
-48278 >first : usermove 48278 >first : N@g3
-48279 <first : move f8g8
-50086 >first : time 29998
-50086 >first : otim 27615
-book hit = (NULL)
-50086 >first : usermove 50086 >first : g3h5
-50087 <first : move b7b5
-Drop move 19, curr=20, x=11,y=4, p=4
-LegalDrop: 4 @ 8,3)
-LegalDrop: 4 @ 8,3)
-52433 >first : time 29998
-52433 >first : otim 27380
-book hit = (NULL)
-52433 >first : usermove 52433 >first : Q@g4
-52434 <first : move g8h7
-54514 >first : usermove 54514 >first : g4g7
-GameEnds(26, Xboard adjudication: Checkmate, 4)
-54514 >first : result 1-0 {Xboard adjudication: Checkmate}
-54514 >first : quit
-GameEnds(26, Xboard adjudication: Checkmate, 2)
+8317 >first : usermove 8317 >first : c2c4
+8318 <first : PAWN at: 6 4, has possible moves: 1
+8318 <first : PAWN at: 6 8, has possible moves: 2
+8318 <first : PAWN at: 7 1, has possible moves: 4
+8318 <first : PAWN at: 7 2, has possible moves: 6
+8318 <first : PAWN at: 7 3, has possible moves: 8
+8318 <first : PAWN at: 7 5, has possible moves: 10
+8318 <first : PAWN at: 7 6, has possible moves: 12
+8318 <first : PAWN at: 7 7, has possible moves: 14
+8318 <first : ROOK at: 8 1, has possible moves: 14
+8318 <first : KNIGHT at: 8 2, has possible moves: 17
+8318 <first : BISHOP at: 8 3, has possible moves: 22
+8318 <first : ROOK at: 8 4, has possible moves: 23
+8318 <first : BISHOP at: 8 4, has possible moves: 23
+8318 <first : QUEEN at: 8 4, has possible moves: 23
+8318 <first : KING at: 8 5, has possible moves: 24
+8318 <first : BISHOP at: 8 6, has possible moves: 24
+8318 <first : KNIGHT at: 8 7, has possible moves: 25
+8318 <first : ROOK at: 8 8, has possible moves: 26
+8318 <first : move b8c6
+GameEnds(29, xboard exit, 2)
+18573 >first : result * {xboard exit}
+18573 >first : quit

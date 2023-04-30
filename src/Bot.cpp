@@ -50,8 +50,6 @@ void Bot::recordMove(Move* move, PlaySide sideToMove) {
     /* You might find it useful to also separately
      * record last move in another custom field */
 
-    showBoard();
-
     root.updateBoard(move, sideToMove);
 
     if (checkRepeatedConfigs()) {
@@ -74,8 +72,13 @@ Move* Bot::calculateNextMove() {
 
     root.calculateAllNextMoves(engineSide);
 
+    // sleep(1);
+
     if (root.castleNow) {
-        return root.castleMove->move;
+        Move* sentMove = root.possibleMoves[root.castleMoveIndex].move;
+        root = MoveNode(root.possibleMoves[root.castleMoveIndex]);
+        
+        return sentMove;
     }
 
     fout << "Total possible moves: " << root.possibleMoves.size() << std::endl;
