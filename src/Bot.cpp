@@ -72,7 +72,7 @@ Move* Bot::calculateNextMove() {
 
     root.calculateAllNextMoves(engineSide);
 
-    // sleep(1);
+    sleep(1);
 
     if (root.castleNow) {
         Move* sentMove = root.possibleMoves[root.castleMoveIndex].move;
