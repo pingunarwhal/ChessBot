@@ -2,11 +2,7 @@
 
 #include <bits/stdc++.h>
 
-bool isWhite(PlaySidePiece piece) {
-	return false;
-}
-
-double evaluate_basic(BoardConfig config, bool canCastle, int side) {
+double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, int side) {
 	return 0;
 }
 

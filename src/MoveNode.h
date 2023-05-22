@@ -25,7 +25,7 @@ class MoveNode {
 
 		Move *move;
 
-		int score;
+		double score;
 
 		std::vector<MoveNode> possibleMoves;
 
