@@ -2,6 +2,7 @@
 #define EVALUATE_H
 
 #include "BoardHelpers.h"
+#include "PlaySide.h"
 
 #define DOUBLE_PAWNS_S -0.5
 #define ISOLATED_PAWNS_S -0.5
