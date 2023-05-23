@@ -23,9 +23,9 @@ bool check_file_isolated(BoardConfig config, int fileToCheck, PlaySide side) {
 double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side) {
 	double score = 0;
 
-	for (int i = 1; i <= 8; i++) {
-		for (int j = 1; j <= 8; j++) {
-			if (config.config[i][j] != 0) {
+	for (int i = 1; i <= TABLE_SIZE; i++) {
+		for (int j = 1; j <= TABLE_SIZE; j++) {
+			if (config.config[i][j] != NO_PIECE) {
 				switch (config.config[i][j])
 				{
 				case WHITE_PAWN:
@@ -106,10 +106,151 @@ double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, Pl
 	return score;
 }
 
-double evaluate_early(BoardConfig config, bool canCastle, int side) {
-	return 0;
+double pawnPosition(BoardConfig config, int i, int j) {
+	double pawnScore = 0;
+
+	if (3 <= i && i <= 6 && 4 <= j && j <= 6) {
+		pawnScore += CENTER_PAWN;
+	}
+
+	/* check if a pawn is supported by another pawn */
+	if (config.config[i + 1][j - 1] == WHITE_EN_PAS ||
+		config.config[i + 1][j + 1] == WHITE_EN_PAS ||
+		config.config[i + 1][j - 1] == WHITE_PAWN ||
+		config.config[i + 1][j + 1] == WHITE_PAWN) {
+			pawnScore += PAWN_STRUCTURE;
+		}
+
+	if (config.config[i - 1][j - 1] == WHITE_EN_PAS ||
+		config.config[i - 1][j + 1] == WHITE_EN_PAS ||
+		config.config[i - 1][j - 1] == WHITE_PAWN ||
+		config.config[i - 1][j + 1] == WHITE_PAWN) {
+			pawnScore += PAWN_STRUCTURE;
+		}
+
+	/* check if a pawn supports another pawn */
+	if (config.config[i + 1][j - 1] == BLACK_EN_PAS ||
+		config.config[i + 1][j + 1] == BLACK_EN_PAS ||
+		config.config[i + 1][j - 1] == BLACK_PAWN ||
+		config.config[i + 1][j + 1] == BLACK_PAWN) {
+			pawnScore += PAWN_STRUCTURE;
+		}
+
+	if (config.config[i - 1][j - 1] == BLACK_EN_PAS ||
+		config.config[i - 1][j + 1] == BLACK_EN_PAS ||
+		config.config[i - 1][j - 1] == BLACK_PAWN ||
+		config.config[i - 1][j + 1] == BLACK_PAWN) {
+			pawnScore += PAWN_STRUCTURE;
+		}
+
+	return pawnScore;
 }
 
-double evaluate_late(BoardConfig config, bool canCastle, int side) {
+double pawnControl(BoardConfig config) {
+	double pawnStructureScore = 0;
+
+	for (int i = 1; i <= TABLE_SIZE; i++) {
+		for (int j = 1; j <= TABLE_SIZE; j++) {
+			switch(config.config[i][j]) {
+				case WHITE_EN_PAS:
+				case WHITE_PAWN:
+					pawnStructureScore += pawnPosition(config, i, j);
+					break;
+				case BLACK_EN_PAS:
+				case BLACK_PAWN:
+					pawnStructureScore -= pawnPosition(config, i, j);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	return pawnStructureScore;
+}
+
+double knightsEarly(BoardConfig config) {
+	double knightsEarlyScore = 0;
+
+	for (int i = 1; i <= TABLE_SIZE; i++) {
+		for (int j = 1; j <= TABLE_SIZE; j++) {
+			switch(config.config[i][j]) {
+				case WHITE_KNIGHT:
+					if ((i == 3 && j == 3) || (i == 3 && j == 6)) {
+						knightsEarlyScore += KNIGHT_EARLY_S;
+					}
+					break;
+				case BLACK_KNIGHT:
+					if ((i == 6 && j == 3) || (i == 6 && j == 6)) {
+						knightsEarlyScore -= KNIGHT_EARLY_S;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	return knightsEarlyScore;
+}
+
+double bishopControl(BoardConfig config) {
+	double bishopControlScore = 0;
+
+	for (int i = 1; i <= TABLE_SIZE; i++) {
+		for (int j = 1; j <= TABLE_SIZE; j++) {
+			switch(config.config[i][j]) {
+				case WHITE_BISHOP:
+					if (3 <= i && i <= 6 && 3 <= j && j <= 6) {
+						bishopControlScore += BISHOP_CONTROL_S;
+					}
+					break;
+				case BLACK_BISHOP:
+					if (3 <= i && i <= 6 && 3 <= j && j <= 6) {
+						bishopControlScore -= BISHOP_CONTROL_S;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	return bishopControlScore;
+}
+
+double rookControl(BoardConfig config) {
+	double rookControlScore = 0;
+
+	for (int i = 1; i <= TABLE_SIZE; i++) {
+		for (int j = 1; j <= TABLE_SIZE; j++) {
+			switch(config.config[i][j]) {
+				case WHITE_ROOK:
+					if (3 <= i && i <= 6 && 2 <= j && j <= 7) {
+						rookControlScore += ROOK_CONTROL_S;
+					}
+					break;
+				case BLACK_ROOK:
+					if (3 <= i && i <= 6 && 2 <= j && j <= 7) {
+						rookControlScore -= ROOK_CONTROL_S;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	return rookControlScore;
+}
+
+double evaluate_early(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side) {
+	double score = evaluate_basic(config, canCastle, possibleMoves, side);
+	score += pawnControl(config);
+	score += knightsEarly(config);
+	return score;
+}
+
+double evaluate_late(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side) {
 	return 0;
 }

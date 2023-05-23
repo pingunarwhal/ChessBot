@@ -9,6 +9,8 @@
 #define KNIGHT_EARLY_S 1.5
 #define ATTACK_NEAR_KING_S 1.5
 #define MOBILITY_S 0.05
+#define BISHOP_CONTROL_S 1
+#define ROOK_CONTROL_S 1.5
 
 enum PieceScore {
   PAWN_S = 1, ROOK_S = 5,
@@ -17,12 +19,25 @@ enum PieceScore {
   P_ROOK_S = 0, P_KNIGHT_S = 6,
   P_BISHOP_S = 0, P_QUEEN_S = 17,
   CASTLE_S = 3, CENTER_PAWN = 2,
+  PAWN_STRUCTURE = 1
 };
 
-double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, int side);
+bool check_file_isolated(BoardConfig config, int fileToCheck, PlaySide side);
 
-double evaluate_early(BoardConfig config, bool canCastle, int side);
+double pawnPosition(BoardConfig config, int i, int j);
 
-double evaluate_late(BoardConfig config, bool canCastle, int side);
+double pawnControl(BoardConfig config);
+
+double knightsEarly(BoardConfig config);
+
+double bishopControl(BoardConfig config);
+
+double rookControl(BoardConfig config);
+
+double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side);
+
+double evaluate_early(BoardConfig config, bool canCastle, int possible_moves, PlaySide side);
+
+double evaluate_late(BoardConfig config, bool canCastle, int possible_moves, PlaySide side);
 
 #endif
