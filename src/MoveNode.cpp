@@ -797,9 +797,6 @@ void MoveNode::whitePawnMoves(int x, int y, PlaySide side) {
             }
         }
     }
-
-    fout << "PAWN at: " << x << " " << y
-         << ", has possible moves: " << possibleMoves.size() << "\n";
 }
 
 void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
@@ -1018,9 +1015,6 @@ void MoveNode::blackPawnMoves(int x, int y, PlaySide side) {
             }
         }
     }
-
-    fout << "PAWN at: " << x << " " << y
-         << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
 void MoveNode::rookMoves(int x, int y, PlaySide side) {
@@ -1208,9 +1202,6 @@ void MoveNode::rookMoves(int x, int y, PlaySide side) {
             break;
         }
     }
-
-    fout << "ROOK at: " << x << " " << y
-         << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
 void MoveNode::knightMoves(int x, int y, PlaySide side) {
@@ -1263,9 +1254,6 @@ void MoveNode::knightMoves(int x, int y, PlaySide side) {
             }
         }
     }
-
-    fout << "KNIGHT at: " << x << " " << y
-         << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
 void MoveNode::bishopMoves(int x, int y, PlaySide side) {
@@ -1390,9 +1378,6 @@ void MoveNode::bishopMoves(int x, int y, PlaySide side) {
             break;
         }
     }
-
-    fout << "BISHOP at: " << x << " " << y
-         << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
 void MoveNode::queenMoves(int x, int y, PlaySide side) {
@@ -1403,9 +1388,6 @@ void MoveNode::queenMoves(int x, int y, PlaySide side) {
 
     rookMoves(x, y, side);
     bishopMoves(x, y, side);
-
-    fout << "QUEEN at: " << x << " " << y
-         << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
 void MoveNode::kingMoves(int x, int y, PlaySide side) {
@@ -1512,9 +1494,6 @@ void MoveNode::kingMoves(int x, int y, PlaySide side) {
             }
         }
     }
-
-    fout << "KING at: " << x << " " << y
-         << ", has possible moves: " << possibleMoves.size() << std::endl;
 }
 
 PlaySidePiece convertRegularPiece(Piece piece, PlaySide mySide, bool type) {

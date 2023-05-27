@@ -74,26 +74,12 @@ Move* Bot::calculateNextMove() {
      * Return move that you are willing to submit
      * Move is to be constructed via one of the factory methods declared in
      * Move.h */
-
-    root.calculateAllNextMoves(engineSide);
-
-    // sleep(1);
-
-    if (root.castleNow) {
-        Move* sentMove = root.possibleMoves[root.castleMoveIndex].move;
-        root = MoveNode(root.possibleMoves[root.castleMoveIndex]);
-        
-        return sentMove;
-    }
-
-    fout << "Total possible moves: " << root.possibleMoves.size() << std::endl;
-
     PlaySide enemySide;
     setSides(engineSide, enemySide);
 
     int alpha = -INF;
     int beta = INF;
-    alphaBeta(engineSide, enemySide, 4, alpha, beta, root);
+    int score = alphaBeta(engineSide, enemySide, 1, alpha, beta, root);
 
     Move* sentMove = bestMove.move;
 
@@ -102,6 +88,8 @@ Move* Bot::calculateNextMove() {
 
     fout << "board after bot move:\n";
     showBoard();
+
+    fout << "score: " << score << "\n";
 
     return sentMove;
 }
@@ -140,7 +128,9 @@ int Bot::alphaBeta(PlaySide myside, PlaySide enemyside, int depth, int alpha, in
     if (depth == 0 || !current.possibleMoves.size()) {
         return evaluate_early(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside);
     }
+
     int best_score = -INF;
+
     for (auto &move : current.possibleMoves) {
         int score = -alphaBeta(enemyside, myside, depth - 1, -beta, -alpha, move);
         if (score > best_score) {
