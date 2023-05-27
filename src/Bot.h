@@ -21,6 +21,9 @@ class Bot {
   bool threeRepeatedConfigs;
   int counterMoves;
 
+  //TODO check if is alright
+	MoveNode bestMove;
+
   /* Past table configs */
   std::vector<BoardConfig> pastConfigs;
 
@@ -59,6 +62,8 @@ class Bot {
   void showBoard(); 
 
   static std::string getBotName();
+
+  int alphaBeta(PlaySide myside, PlaySide enemyside, int depth, int alpha, int beta, MoveNode &current);
 };
 
 #endif
