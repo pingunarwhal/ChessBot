@@ -8,7 +8,7 @@
 #include "Piece.h"
 #include "PlaySide.h"
 
-static PlaySide sideToMove;
+PlaySide sideToMove;
 PlaySide engineSide;
 
 PlaySide getEngineSide() {

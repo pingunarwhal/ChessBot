@@ -3,6 +3,7 @@
 #include <bits/stdc++.h>
 
 extern PlaySide engineSide;
+extern PlaySide sideToMove;
 std::ofstream fout("output.txt");
 
 const std::string Bot::BOT_NAME
@@ -18,6 +19,10 @@ void Bot::copyCurrentConfig() {
     BoardConfig currentGameBoard = BoardConfig(root.currentBoard);
 
     pastConfigs.push_back(currentGameBoard);
+}
+
+void setSides(PlaySide engineSide, PlaySide &enemySide) {
+    enemySide = (engineSide == BLACK ? WHITE : BLACK);
 }
 
 bool Bot::checkRepeatedConfigs() {
@@ -83,14 +88,17 @@ Move* Bot::calculateNextMove() {
 
     fout << "Total possible moves: " << root.possibleMoves.size() << std::endl;
 
-    srand(time(0));
+    PlaySide enemySide;
+    setSides(engineSide, enemySide);
 
-    int r = rand() % root.possibleMoves.size();
+    int alpha = -INF;
+    int beta = INF;
+    alphaBeta(engineSide, enemySide, 4, alpha, beta, root);
 
-    Move* sentMove = root.possibleMoves[r].move;
+    Move* sentMove = bestMove.move;
 
     /* overwrite current game table */
-    root = MoveNode(root.possibleMoves[r]);
+    root = MoveNode(bestMove);
 
     fout << "board after bot move:\n";
     showBoard();
@@ -130,9 +138,9 @@ int Bot::alphaBeta(PlaySide myside, PlaySide enemyside, int depth, int alpha, in
     current.calculateAllNextMoves(engineSide);
 
     if (depth == 0 || !current.possibleMoves.size()) {
-        //evaluate
+        return evaluate_early(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside);
     }
-    int best_score = -(1 << 30);
+    int best_score = -INF;
     for (auto &move : current.possibleMoves) {
         int score = -alphaBeta(enemyside, myside, depth - 1, -beta, -alpha, move);
         if (score > best_score) {
