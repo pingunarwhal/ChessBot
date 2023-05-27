@@ -124,3 +124,30 @@ void Bot::showBoard() {
 
     fout << "\n";
 }
+
+int Bot::alphaBeta(PlaySide myside, PlaySide enemyside, int depth, int alpha, int beta, MoveNode &current) {
+    //generate all possible moves for player
+    current.calculateAllNextMoves(engineSide);
+
+    if (depth == 0 || !current.possibleMoves.size()) {
+        //evaluate
+    }
+    int best_score = -(1 << 30);
+    for (auto &move : current.possibleMoves) {
+        int score = -alphaBeta(enemyside, myside, depth - 1, -beta, -alpha, move);
+        if (score > best_score) {
+            best_score = score;
+            bestMove = move;
+        }
+
+        if (best_score > alpha) {
+            alpha = best_score;
+        }
+
+        if (alpha >= beta) {
+            break;
+        }
+    }
+
+    return best_score;
+}
