@@ -3,6 +3,9 @@
 #include <bits/stdc++.h>
 
 #include "MoveNode.h"
+#include "Evaluate.h"
+
+#define INF (int)(1 << 30)
 
 class Bot {
  private:
