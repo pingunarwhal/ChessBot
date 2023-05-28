@@ -11,11 +11,12 @@
 #define MOBILITY_S 0.05
 #define BISHOP_CONTROL_S 1
 #define ROOK_CONTROL_S 1.5
+#define KING_S 1000.0
 
 enum PieceScore {
   PAWN_S = 1, ROOK_S = 5,
   KNIGHT_S = 3, BISHOP_S = 3,
-  QUEEN_S = 9, KING_S = 1000,
+  QUEEN_S = 9,
   P_ROOK_S = 0, P_KNIGHT_S = 6,
   P_BISHOP_S = 0, P_QUEEN_S = 17,
   CASTLE_S = 3, CENTER_PAWN = 2,
@@ -36,8 +37,8 @@ double rookControl(BoardConfig config);
 
 double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side);
 
-double evaluate_early(BoardConfig config, bool canCastle, int possible_moves, PlaySide side);
+double evaluate_early(BoardConfig config, bool canCastle, int possible_moves, PlaySide side, PlaySide engineSide);
 
-double evaluate_late(BoardConfig config, bool canCastle, int possible_moves, PlaySide side);
+double evaluate_late(BoardConfig config, bool canCastle, int possible_moves, PlaySide side, PlaySide engineSide);
 
 #endif

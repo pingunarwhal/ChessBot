@@ -23,6 +23,14 @@ bool check_file_isolated(BoardConfig config, int fileToCheck, PlaySide side) {
 double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side) {
 	double score = 0;
 
+	if (possible_moves == 0) {
+		if (side == WHITE) {
+			return -KING_S;
+		} else {
+			return KING_S;
+		}
+	}
+
 	for (int i = 1; i <= TABLE_SIZE; i++) {
 		for (int j = 1; j <= TABLE_SIZE; j++) {
 			if (config.config[i][j] != NO_PIECE) {
@@ -244,13 +252,27 @@ double rookControl(BoardConfig config) {
 	return rookControlScore;
 }
 
-double evaluate_early(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side) {
+double evaluate_early(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
 	double score = evaluate_basic(config, canCastle, possibleMoves, side);
+	
+	if (score == KING_S || score == -KING_S) {
+		if (engineSide == BLACK) {
+			return -score;
+		}
+
+		return score;
+	} 
+
 	score += pawnControl(config);
 	score += knightsEarly(config);
+
+	if (engineSide == BLACK) {
+		return -score;
+	}
+
 	return score;
 }
 
-double evaluate_late(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side) {
+double evaluate_late(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
 	return 0;
 }
