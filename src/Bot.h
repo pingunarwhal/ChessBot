@@ -6,6 +6,7 @@
 #include "Evaluate.h"
 
 #define INF (int)(1 << 30)
+#define DEPTH 2
 
 class Bot {
  private:
@@ -23,9 +24,6 @@ class Bot {
   MoveNode root;
   bool threeRepeatedConfigs;
   int counterMoves;
-
-  //TODO check if is alright
-	MoveNode bestMove;
 
   /* Past table configs */
   std::vector<BoardConfig> pastConfigs;
@@ -62,11 +60,13 @@ class Bot {
   /* check for repeated configs in the pastConfigs vector */
   bool checkRepeatedConfigs();
 
-  void showBoard(); 
+  void showBoard();
+
+  void showBoard2(MoveNode move);
 
   static std::string getBotName();
 
-  int alphaBeta(PlaySide myside, PlaySide enemyside, int depth, int alpha, int beta, MoveNode &current);
+  double alphaBeta(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove);
 };
 
 #endif

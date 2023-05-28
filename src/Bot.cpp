@@ -77,9 +77,11 @@ Move* Bot::calculateNextMove() {
     PlaySide enemySide;
     setSides(engineSide, enemySide);
 
-    int alpha = -INF;
-    int beta = INF;
-    int score = alphaBeta(engineSide, enemySide, 1, alpha, beta, root);
+    MoveNode bestMove;
+
+    double alpha = -INF;
+    double beta = INF;
+    double score = alphaBeta(engineSide, enemySide, DEPTH, alpha, beta, root, bestMove);
 
     Move* sentMove = bestMove.move;
 
@@ -121,21 +123,50 @@ void Bot::showBoard() {
     fout << "\n";
 }
 
-int Bot::alphaBeta(PlaySide myside, PlaySide enemyside, int depth, int alpha, int beta, MoveNode &current) {
-    //generate all possible moves for player
-    current.calculateAllNextMoves(engineSide);
-
-    if (depth == 0 || !current.possibleMoves.size()) {
-        return evaluate_early(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside);
+void Bot::showBoard2(MoveNode move) {
+    /* that's how the chess table is usually seen */
+    fout << "board:\n";
+    for (int i = TABLE_SIZE; i > 0; i--) {
+        for (int j = 1; j <= TABLE_SIZE; j++) {
+            fout << move.currentBoard[i][j] << " ";
+        }
+        fout << "\n";
     }
 
-    int best_score = -INF;
+    fout << "My captured Pieces: ";
+    for (auto& piece : move.myCapturedPieces) {
+        fout << piece << " ";
+    }
+
+    fout << "\n";
+
+    fout << "Enemy captured Pieces: ";
+    for (auto& piece : move.enemyCapturedPieces) {
+        fout << piece << " ";
+    }
+
+    fout << "\n";
+}
+
+double Bot::alphaBeta(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove) {
+    //generate all possible moves for player
+    current.calculateAllNextMoves(myside);
+
+    if (depth == 0 || !current.possibleMoves.size()) {
+        return evaluate_early(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
+    }
+
+    double best_score = -INF;
 
     for (auto &move : current.possibleMoves) {
-        int score = -alphaBeta(enemyside, myside, depth - 1, -beta, -alpha, move);
+        double score = -alphaBeta(enemyside, myside, depth - 1, -beta, -alpha, move, bestMove);
+
+        if (depth == DEPTH && score > best_score) {
+            bestMove = move;
+        }
+
         if (score > best_score) {
             best_score = score;
-            bestMove = move;
         }
 
         if (best_score > alpha) {
