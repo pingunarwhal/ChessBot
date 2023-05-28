@@ -1612,8 +1612,15 @@ Piece convertPlaySidePiece(PlaySidePiece piece) {
 
 void MoveNode::crazyHouseMoves(int x, int y, PlaySide side) {
     int counter = -1;
+    std::map<PlaySidePiece, bool> usedPieces;
 
     for (auto& piece : myCapturedPieces) {
+        if (usedPieces.find(piece) == usedPieces.end()) {
+            usedPieces[piece] = true;
+        } else {
+            continue;
+        }
+
         counter++;
 
         if ((x == 1 || x == 8)

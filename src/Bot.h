@@ -6,7 +6,9 @@
 #include "Evaluate.h"
 
 #define INF (int)(1 << 30)
-#define DEPTH 2
+#define EARLY_DEPTH 2
+#define LATE_DEPTH 4
+#define EARLY_TIMESTAMP 8
 
 class Bot {
  private:
@@ -22,11 +24,14 @@ class Bot {
    * Black King - E8
    */
   MoveNode root;
+  PlaySide enemySide;
   bool threeRepeatedConfigs;
   int counterMoves;
 
   /* Past table configs */
   std::vector<BoardConfig> pastConfigs;
+
+  int timestamp;
 
   /* Declare custom fields above */
   Bot();
@@ -66,7 +71,9 @@ class Bot {
 
   static std::string getBotName();
 
-  double alphaBeta(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove);
+  double alphaBetaEarly(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove, int &counter);
+
+  double alphaBetaLate(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove, int &counter);
 };
 
 #endif
