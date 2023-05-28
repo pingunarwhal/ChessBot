@@ -7,11 +7,12 @@ extern PlaySide sideToMove;
 std::ofstream fout("output.txt");
 
 const std::string Bot::BOT_NAME
-    = "MyBot"; /* Edit this, escaped characters are forbidden */
+    = "ExplodingPengwins"; /* Edit this, escaped characters are forbidden */
 
 Bot::Bot() { /* Initialize custom fields here */
     root = MoveNode();
     threeRepeatedConfigs = false;
+    timestamp = 0;
 }
 
 void Bot::copyCurrentConfig() {
@@ -74,14 +75,22 @@ Move* Bot::calculateNextMove() {
      * Return move that you are willing to submit
      * Move is to be constructed via one of the factory methods declared in
      * Move.h */
-    PlaySide enemySide;
+
     setSides(engineSide, enemySide);
+    timestamp++;
 
     MoveNode bestMove;
 
     double alpha = -INF;
     double beta = INF;
-    double score = alphaBeta(engineSide, enemySide, DEPTH, alpha, beta, root, bestMove);
+    int counter = 0;
+    double score;
+    
+    if (timestamp <= EARLY_TIMESTAMP) {
+        score = alphaBetaEarly(engineSide, enemySide, EARLY_DEPTH, alpha, beta, root, bestMove, counter);
+    } else {
+        score = alphaBetaLate(engineSide, enemySide, LATE_DEPTH, alpha, beta, root, bestMove, counter);
+    }
 
     Move* sentMove = bestMove.move;
 
@@ -92,6 +101,8 @@ Move* Bot::calculateNextMove() {
     showBoard();
 
     fout << "score: " << score << "\n";
+
+    fout << "explored states: " << counter << "\n";
 
     return sentMove;
 }
@@ -148,20 +159,55 @@ void Bot::showBoard2(MoveNode move) {
     fout << "\n";
 }
 
-double Bot::alphaBeta(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove) {
+double Bot::alphaBetaEarly(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove, int &counter) {
     //generate all possible moves for player
     current.calculateAllNextMoves(myside);
 
     if (depth == 0 || !current.possibleMoves.size()) {
+        counter++;
         return evaluate_early(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
     }
 
     double best_score = -INF;
 
     for (auto &move : current.possibleMoves) {
-        double score = -alphaBeta(enemyside, myside, depth - 1, -beta, -alpha, move, bestMove);
+        double score = -alphaBetaEarly(enemyside, myside, depth - 1, -beta, -alpha, move, bestMove, counter);
 
-        if (depth == DEPTH && score > best_score) {
+        if (depth == EARLY_DEPTH && score > best_score) {
+            bestMove = move;
+        }
+
+        if (score > best_score) {
+            best_score = score;
+        }
+
+        if (best_score > alpha) {
+            alpha = best_score;
+        }
+
+        if (alpha >= beta) {
+            break;
+        }
+    }
+
+    return best_score;
+}
+
+double Bot::alphaBetaLate(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove, int &counter) {
+    //generate all possible moves for player
+    current.calculateAllNextMoves(myside);
+
+    if (depth == 0 || !current.possibleMoves.size()) {
+        counter++;
+        return evaluate_late(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
+    }
+
+    double best_score = -INF;
+
+    for (auto &move : current.possibleMoves) {
+        double score = -alphaBetaLate(enemyside, myside, depth - 1, -beta, -alpha, move, bestMove, counter);
+
+        if (depth == LATE_DEPTH && score > best_score) {
             bestMove = move;
         }
 

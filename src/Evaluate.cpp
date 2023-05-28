@@ -22,12 +22,13 @@ bool check_file_isolated(BoardConfig config, int fileToCheck, PlaySide side) {
 
 double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side) {
 	double score = 0;
+	bool isolatedRight, isolatedLeft;
 
 	if (possible_moves == 0) {
 		if (side == WHITE) {
-			return -KING_S;
-		} else {
 			return KING_S;
+		} else {
+			return -KING_S;
 		}
 	}
 
@@ -40,7 +41,9 @@ double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, Pl
 				case WHITE_EN_PAS:
 					score += PAWN_S;
 
-					bool isolatedRight, isolatedLeft;
+					isolatedRight = false;
+					isolatedLeft = false;
+
 					if (j - 1 >= 1) {
 						isolatedLeft = check_file_isolated(config, j - 1, WHITE);
 					}
@@ -274,5 +277,19 @@ double evaluate_early(BoardConfig config, bool canCastle, int possibleMoves, Pla
 }
 
 double evaluate_late(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
-	return 0;
+	double score = evaluate_basic(config, canCastle, possibleMoves, side);
+
+	if (score == KING_S || score == -KING_S) {
+		if (engineSide == BLACK) {
+			return -score;
+		}
+
+		return score;
+	}
+
+	if (engineSide == BLACK) {
+		return -score;
+	}
+
+	return score;
 }
