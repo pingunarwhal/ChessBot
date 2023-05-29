@@ -23,7 +23,7 @@ enum PieceScore {
   PAWN_STRUCTURE = 1
 };
 
-bool check_file_isolated(BoardConfig config, int fileToCheck, PlaySide side);
+bool checkFileIsolated(BoardConfig config, int fileToCheck, PlaySide side);
 
 double pawnPosition(BoardConfig config, int i, int j);
 
@@ -35,10 +35,10 @@ double bishopControl(BoardConfig config);
 
 double rookControl(BoardConfig config);
 
-double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side);
+double evaluateBasic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side);
 
-double evaluate_early(BoardConfig config, bool canCastle, int possible_moves, PlaySide side, PlaySide engineSide);
+double evaluateEarly(BoardConfig config, bool canCastle, int possible_moves, PlaySide side, PlaySide engineSide);
 
-double evaluate_late(BoardConfig config, bool canCastle, int possible_moves, PlaySide side, PlaySide engineSide);
+double evaluateLate(BoardConfig config, bool canCastle, int possible_moves, PlaySide side, PlaySide engineSide);
 
 #endif
