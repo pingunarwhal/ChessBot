@@ -161,12 +161,23 @@ void Bot::showBoard2(MoveNode move) {
 
 double Bot::alphaBetaEarly(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove, int &counter) {
     //generate all possible moves for player
+    if (depth == 0) {
+        counter++;
+        return evaluate_early(current.currentBoard, current.castleNow, 1, myside, engineSide);
+    }
+    
     current.calculateAllNextMoves(myside);
 
-    if (depth == 0 || !current.possibleMoves.size()) {
+    if (!current.possibleMoves.size()) {
         counter++;
         return evaluate_early(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
     }
+
+    for (auto &move : current.possibleMoves) {
+        move.score = evaluate_early(move.currentBoard, move.castleNow, 0, myside, engineSide);
+    }
+
+    sort(current.possibleMoves.begin(), current.possibleMoves.end(), [](MoveNode &m1, MoveNode &m2) {return m1.score > m2.score;});
 
     double best_score = -INF;
 
@@ -195,12 +206,24 @@ double Bot::alphaBetaEarly(PlaySide myside, PlaySide enemyside, int depth, doubl
 
 double Bot::alphaBetaLate(PlaySide myside, PlaySide enemyside, int depth, double alpha, double beta, MoveNode current, MoveNode &bestMove, int &counter) {
     //generate all possible moves for player
+
+    if (depth == 0) {
+        counter++;
+        return evaluate_late(current.currentBoard, current.castleNow, 1, myside, engineSide);
+    }
+
     current.calculateAllNextMoves(myside);
 
-    if (depth == 0 || !current.possibleMoves.size()) {
+    if (!current.possibleMoves.size()) {
         counter++;
         return evaluate_late(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
     }
+
+    for (auto &move : current.possibleMoves) {
+        move.score = evaluate_late(move.currentBoard, move.castleNow, 0, myside, engineSide);
+    }
+
+    sort(current.possibleMoves.begin(), current.possibleMoves.end(), [](MoveNode &m1, MoveNode &m2) {return m1.score > m2.score;});
 
     double best_score = -INF;
 

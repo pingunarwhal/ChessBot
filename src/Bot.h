@@ -6,7 +6,7 @@
 #include "Evaluate.h"
 
 #define INF (int)(1 << 30)
-#define EARLY_DEPTH 2
+#define EARLY_DEPTH 4
 #define LATE_DEPTH 4
 #define EARLY_TIMESTAMP 8
 
