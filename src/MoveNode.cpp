@@ -351,7 +351,8 @@ bool MoveNode::checkKingAttack(PlaySidePiece king, int& x, int& y) {
 }
 
 bool MoveNode::checkKingSafety(PlaySide sideToMove) {
-    int x_king, y_king;
+    int x_king = 0;
+    int y_king = 0;
 
     if (sideToMove == BLACK) {
         /* check for white king's safety */
