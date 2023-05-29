@@ -163,7 +163,7 @@ double Bot::alphaBetaEarly(PlaySide myside, PlaySide enemyside, int depth, doubl
     //generate all possible moves for player
     if (depth == 0) {
         counter++;
-        return evaluate_early(current.currentBoard, current.castleNow, 1, myside, engineSide);
+        return evaluate_early(current.currentBoard, false, 1, myside, engineSide);
     }
     
     current.calculateAllNextMoves(myside);
@@ -185,7 +185,7 @@ double Bot::alphaBetaEarly(PlaySide myside, PlaySide enemyside, int depth, doubl
         double score = -alphaBetaEarly(enemyside, myside, depth - 1, -beta, -alpha, move, bestMove, counter);
 
         if (depth == EARLY_DEPTH && score > best_score) {
-            bestMove = move;
+            bestMove = MoveNode(move);
         }
 
         if (score > best_score) {
@@ -209,7 +209,7 @@ double Bot::alphaBetaLate(PlaySide myside, PlaySide enemyside, int depth, double
 
     if (depth == 0) {
         counter++;
-        return evaluate_late(current.currentBoard, current.castleNow, 1, myside, engineSide);
+        return evaluate_late(current.currentBoard, false, 1, myside, engineSide);
     }
 
     current.calculateAllNextMoves(myside);
@@ -231,7 +231,7 @@ double Bot::alphaBetaLate(PlaySide myside, PlaySide enemyside, int depth, double
         double score = -alphaBetaLate(enemyside, myside, depth - 1, -beta, -alpha, move, bestMove, counter);
 
         if (depth == LATE_DEPTH && score > best_score) {
-            bestMove = move;
+            bestMove = MoveNode(move);
         }
 
         if (score > best_score) {
