@@ -163,18 +163,18 @@ double Bot::alphaBetaEarly(PlaySide myside, PlaySide enemyside, int depth, doubl
     //generate all possible moves for player
     if (depth == 0) {
         counter++;
-        return evaluate_early(current.currentBoard, false, 1, myside, engineSide);
+        return evaluateEarly(current.currentBoard, false, 1, myside, engineSide);
     }
     
     current.calculateAllNextMoves(myside);
 
     if (!current.possibleMoves.size()) {
         counter++;
-        return evaluate_early(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
+        return evaluateEarly(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
     }
 
     for (auto &move : current.possibleMoves) {
-        move.score = evaluate_early(move.currentBoard, move.castleNow, 0, myside, engineSide);
+        move.score = evaluateEarly(move.currentBoard, move.castleNow, 0, myside, engineSide);
     }
 
     sort(current.possibleMoves.begin(), current.possibleMoves.end(), [](MoveNode &m1, MoveNode &m2) {return m1.score > m2.score;});
@@ -209,18 +209,18 @@ double Bot::alphaBetaLate(PlaySide myside, PlaySide enemyside, int depth, double
 
     if (depth == 0) {
         counter++;
-        return evaluate_late(current.currentBoard, false, 1, myside, engineSide);
+        return evaluateLate(current.currentBoard, false, 1, myside, engineSide);
     }
 
     current.calculateAllNextMoves(myside);
 
     if (!current.possibleMoves.size()) {
         counter++;
-        return evaluate_late(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
+        return evaluateLate(current.currentBoard, current.castleNow, current.possibleMoves.size(), myside, engineSide);
     }
 
     for (auto &move : current.possibleMoves) {
-        move.score = evaluate_late(move.currentBoard, move.castleNow, 0, myside, engineSide);
+        move.score = evaluateLate(move.currentBoard, move.castleNow, 0, myside, engineSide);
     }
 
     sort(current.possibleMoves.begin(), current.possibleMoves.end(), [](MoveNode &m1, MoveNode &m2) {return m1.score > m2.score;});

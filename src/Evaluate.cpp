@@ -2,7 +2,7 @@
 
 #include <bits/stdc++.h>
 
-bool check_file_isolated(BoardConfig config, int fileToCheck, PlaySide side) {
+bool checkFileIsolated(BoardConfig config, int fileToCheck, PlaySide side) {
 	if (side == WHITE) {
 		for (int i = 1; i <= 8; i++) {
 			if (config.config[i][fileToCheck] == WHITE_EN_PAS || config.config[i][fileToCheck] == WHITE_PAWN) {
@@ -20,7 +20,7 @@ bool check_file_isolated(BoardConfig config, int fileToCheck, PlaySide side) {
 	return true;
 }
 
-double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side) {
+double evaluateBasic(BoardConfig config, bool canCastle, int possible_moves, PlaySide side) {
 	double score = 0;
 	bool isolatedRight, isolatedLeft;
 
@@ -45,10 +45,10 @@ double evaluate_basic(BoardConfig config, bool canCastle, int possible_moves, Pl
 					isolatedLeft = false;
 
 					if (j - 1 >= 1) {
-						isolatedLeft = check_file_isolated(config, j - 1, WHITE);
+						isolatedLeft = checkFileIsolated(config, j - 1, WHITE);
 					}
 					if (j + 1 <= 8) {
-						isolatedRight = check_file_isolated(config, j + 1, WHITE);
+						isolatedRight = checkFileIsolated(config, j + 1, WHITE);
 					}
 
 					if (isolatedLeft && isolatedRight) {
@@ -255,8 +255,8 @@ double rookControl(BoardConfig config) {
 	return rookControlScore;
 }
 
-double evaluate_early(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
-	double score = evaluate_basic(config, canCastle, possibleMoves, side);
+double evaluateEarly(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
+	double score = evaluateBasic(config, canCastle, possibleMoves, side);
 	
 	if (score == KING_S || score == -KING_S) {
 		if (engineSide == BLACK) {
@@ -276,8 +276,8 @@ double evaluate_early(BoardConfig config, bool canCastle, int possibleMoves, Pla
 	return score;
 }
 
-double evaluate_late(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
-	double score = evaluate_basic(config, canCastle, possibleMoves, side);
+double evaluateLate(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
+	double score = evaluateBasic(config, canCastle, possibleMoves, side);
 
 	if (score == KING_S || score == -KING_S) {
 		if (engineSide == BLACK) {
