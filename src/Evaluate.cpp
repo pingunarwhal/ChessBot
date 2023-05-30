@@ -276,6 +276,63 @@ double evaluateEarly(BoardConfig config, bool canCastle, int possibleMoves, Play
 	return score;
 }
 
+double checkKingAttacked(BoardConfig config, PlaySide side) {
+	int unsafe = 0;
+
+	MoveNode move;
+	std::copy(&config.config[0][0], &config.config[0][0] + (TABLE_SIZE + 1) * (TABLE_SIZE + 1), &move.currentBoard[0][0]);
+
+	if (!move.checkKingSafety(side)) {
+		unsafe = 1;
+	}
+
+	return unsafe * KING_CHECK_S;
+}
+
+double checkPawnShield(BoardConfig config, PlaySide side) {
+	int kingX = 0, kingY = 0;
+	int pawnShield = 0;
+
+	// find king on board
+	if (side == WHITE) {
+		for (int i = 1; i <= TABLE_SIZE; i++) {
+			for (int j = 1; j <= TABLE_SIZE; j++) {
+				if (config.config[i][j] == WHITE_KING) {
+					kingX = i;
+					kingY = j;
+				}
+			}
+		}
+
+		for (int i = std::max(1, kingX - 1); i <= std::min(TABLE_SIZE, kingX + 1); i++) {
+			for (int j = std::max(1, kingY - 1); j <= std::min(TABLE_SIZE, kingY + 2); j++) {
+				if (config.config[i][j] == WHITE_PAWN || config.config[i][j] == WHITE_EN_PAS) {
+					pawnShield++;
+				}
+			}
+		}
+	} else {
+		for (int i = 1; i <= TABLE_SIZE; i++) {
+			for (int j = 1; j <= TABLE_SIZE; j++) {
+				if (config.config[i][j] == BLACK_KING) {
+					kingX = i;
+					kingY = j;
+				}
+			}
+		}
+
+		for (int i = std::max(1, kingX - 1); i <= std::min(TABLE_SIZE, kingX + 1); i++) {
+			for (int j = std::max(1, kingY - 1); j <= std::min(TABLE_SIZE, kingY + 2); j++) {
+				if (config.config[i][j] == BLACK_PAWN || config.config[i][j] == BLACK_EN_PAS) {
+					pawnShield++;
+				}
+			}
+		}
+	}
+
+	return PAWN_SHIELD_S * pawnShield;
+}
+
 double evaluateLate(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
 	double score = evaluateBasic(config, canCastle, possibleMoves, side);
 
@@ -286,6 +343,9 @@ double evaluateLate(BoardConfig config, bool canCastle, int possibleMoves, PlayS
 
 		return score;
 	}
+
+	score += checkPawnShield(config, side);
+	score += checkKingAttacked(config, side);
 
 	if (engineSide == BLACK) {
 		return -score;
