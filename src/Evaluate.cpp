@@ -280,7 +280,11 @@ double checkKingAttacked(BoardConfig config, PlaySide side) {
 	int unsafe = 0;
 
 	MoveNode move;
-	std::copy(&config.config[0][0], &config.config[0][0] + (TABLE_SIZE + 1) * (TABLE_SIZE + 1), &move.currentBoard[0][0]);
+	for (int i = 1; i <= TABLE_SIZE; i++) {
+		for (int j = 1; j <= TABLE_SIZE; j++) {
+			move.currentBoard[i][j] = config.config[i][j];
+		}
+	}
 
 	if (!move.checkKingSafety(side)) {
 		unsafe = 1;
@@ -390,7 +394,7 @@ double evaluateLate(BoardConfig config, bool canCastle, int possibleMoves, PlayS
 
 	score += checkPawnShield(config, side);
 	score += checkKingAttacked(config, side);
-	score += checkPawnStorm(config, side);
+	// score += checkPawnStorm(config, side);
 
 	if (engineSide == BLACK) {
 		return -score;
