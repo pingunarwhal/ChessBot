@@ -240,23 +240,43 @@ The main algorithms used for this stage are placed in the `Evaluate.cpp` source 
 
 1. `checkFileIsolated()`:
 
-1. `evaluateBasic()`, `evaluateEarly()`, `evaluateLate()`:
+   &rarr; Searches file for existence of other pawns (in order to determine if a pawn is isolated or not).
 
-1. `pawnControl()`:
+2. `evaluateBasic()`, `evaluateEarly()`, `evaluateLate()`:
 
-1. `bishopControl()`:
+   &rarr; All 3 of these functions calculate the score based on a board configuration as follows:
+      * `evaluateBasic()` is used in both early and late game evaluation, and consists of heuristics such as: material, mobility, castling, isolated pawns;
+      * `evaluateEarly()` checks for additional heuristics: centre squares control (by pawns, rooks, knights and bishops), pawn position;
+      * `evaluateLate()` makes use of the basic heuristics, as well as: king check, optimal pawn formations;
 
-1. `rookControl()`:
+3. `pawnControl()`:
 
-1. `knightsEarly()`:
+   &rarr; Verifies that pawns have control over centre squares and are defended by other pawns.
 
-1. `checkKingAttacked()`:
+4. `bishopControl()`:
 
-1. `checkPawnShield()`:
+   &rarr; Verifies that bishops are developed and have control over centre squares.
+
+5. `rookControl()`:
+
+   &rarr; Verifies that rooks are developed and have control over centre squares.
+
+6. `knightsEarly()`:
+
+   &rarr; Verifies that knights are developed and have control over centre squares.
+
+7. `checkKingAttacked()`:
+
+   &rarr; Verifies whether king is in check.
+
+8. `checkPawnShield()`:
+
+   &rarr; Verifies whether king is defended by a pawn formation.
 
 ## Bibliography
 
 [MiniMax Lab](https://ocw.cs.pub.ro/courses/pa/laboratoare/laborator-05)
+[Claude E. Shannon's "Programming a Computer for Playing Chess"](https://vision.unipv.it/IA1/ProgrammingaComputerforPlayingChess.pdf)
 
 ## Members and Their Work
 
@@ -266,7 +286,7 @@ Alexandru Mihai, _the "let Ofast do its magic" believer_
 
 &rarr; Alpha-beta pruning algorithm
 
-&rarr; euristics
+&rarr; heuristics
 
 Delia Constantinescu, _the "but depth=5 doesn't get blocked for me" person_
 
@@ -274,7 +294,7 @@ Delia Constantinescu, _the "but depth=5 doesn't get blocked for me" person_
 
 &rarr; Alpha-beta pruning algorithm
 
-&rarr; euristics
+&rarr; heuristics
 
 Ecaterina Mincă, _the competition spy_
 
