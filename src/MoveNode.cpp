@@ -1616,13 +1616,13 @@ void MoveNode::crazyHouseMoves(int x, int y, PlaySide side) {
     std::map<PlaySidePiece, bool> usedPieces;
 
     for (auto& piece : myCapturedPieces) {
+        counter++;
+        
         if (usedPieces.find(piece) == usedPieces.end()) {
             usedPieces[piece] = true;
         } else {
             continue;
         }
-
-        counter++;
 
         if ((x == 1 || x == 8)
             && (piece == WHITE_PAWN || piece == BLACK_PAWN)) {
