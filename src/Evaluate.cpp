@@ -333,6 +333,50 @@ double checkPawnShield(BoardConfig config, PlaySide side) {
 	return PAWN_SHIELD_S * pawnShield;
 }
 
+double checkPawnStorm(BoardConfig config, PlaySide side) {
+	int kingX = 0, kingY = 0;
+	int pawnStorm = 0;
+
+	// find opposite king on board
+	if (side == BLACK) {
+		for (int i = 1; i <= TABLE_SIZE; i++) {
+			for (int j = 1; j <= TABLE_SIZE; j++) {
+				if (config.config[i][j] == WHITE_KING) {
+					kingX = i;
+					kingY = j;
+				}
+			}
+		}
+
+		for (int i = std::max(1, kingX - 1); i <= std::min(TABLE_SIZE, kingX + 1); i++) {
+			for (int j = std::max(1, kingY - 1); j <= std::min(TABLE_SIZE, kingY + 2); j++) {
+				if (config.config[i][j] == WHITE_PAWN || config.config[i][j] == WHITE_EN_PAS) {
+					pawnStorm++;
+				}
+			}
+		}
+	} else {
+		for (int i = 1; i <= TABLE_SIZE; i++) {
+			for (int j = 1; j <= TABLE_SIZE; j++) {
+				if (config.config[i][j] == BLACK_KING) {
+					kingX = i;
+					kingY = j;
+				}
+			}
+		}
+
+		for (int i = std::max(1, kingX - 1); i <= std::min(TABLE_SIZE, kingX + 1); i++) {
+			for (int j = std::max(1, kingY - 1); j <= std::min(TABLE_SIZE, kingY + 2); j++) {
+				if (config.config[i][j] == BLACK_PAWN || config.config[i][j] == BLACK_EN_PAS) {
+					pawnStorm++;
+				}
+			}
+		}
+	}
+
+	return PAWN_STORM_S * pawnStorm;
+}
+
 double evaluateLate(BoardConfig config, bool canCastle, int possibleMoves, PlaySide side, PlaySide engineSide) {
 	double score = evaluateBasic(config, canCastle, possibleMoves, side);
 
@@ -346,6 +390,7 @@ double evaluateLate(BoardConfig config, bool canCastle, int possibleMoves, PlayS
 
 	score += checkPawnShield(config, side);
 	score += checkKingAttacked(config, side);
+	score += checkPawnStorm(config, side);
 
 	if (engineSide == BLACK) {
 		return -score;

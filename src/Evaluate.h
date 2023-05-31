@@ -14,6 +14,7 @@
 #define ROOK_CONTROL_S 1.5
 #define KING_S 1000.0
 #define PAWN_SHIELD_S 0.1
+#define PAWN_STORM_S 0.05
 
 enum PieceScore {
   PAWN_S = 1, ROOK_S = 5,
@@ -44,6 +45,8 @@ double evaluateEarly(BoardConfig config, bool canCastle, int possible_moves, Pla
 double checkKingAttacked(BoardConfig config, PlaySide side);
 
 double checkPawnShield(BoardConfig config, PlaySide side);
+
+double checkPawnStorm(BoardConfig config, PlaySide side);
 
 double evaluateLate(BoardConfig config, bool canCastle, int possible_moves, PlaySide side, PlaySide engineSide);
 
