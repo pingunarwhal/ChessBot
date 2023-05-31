@@ -160,19 +160,19 @@ maria@spectrum:~/proiect-pa-2023-exploding-pengwins.git$ cd src/
 
 ### `xboard` Integration
 
-#### `syockfish` - easy
+#### `stockfish` - easy
 
 ```console
 maria@spectrum:~/proiect-pa-2023-exploding-pengwins.git$ xboard -variant crazyhouse -fcp "./stockfish" -firstOptions "Skill Level=-20,Slow Mover=10,Use NNUE=false" -fn "Stockfish Easy" -scp "make run" -tc 5 -inc 2 -autoCallFlag true -mg 4 -sgf partide.txt -reuseSecond false 
 ```
 
-#### `syockfish` - medium
+#### `stockfish` - medium
 
 ```console
 maria@spectrum:~/proiect-pa-2023-exploding-pengwins.git$ xboard -variant crazyhouse -fcp "./stockfish" -firstOptions "Skill Level=-10,Slow Mover=10,Use NNUE=false" -fn "Stockfish Medium" -scp "make run" -tc 5 -inc 2 -autoCallFlag true -mg 4 -sgf partide.txt -reuseSecond false 
 ```
 
-#### `syockfish` - hard
+#### `stockfish` - hard
 
 ```console
 maria@spectrum:~/proiect-pa-2023-exploding-pengwins.git$ xboard -variant crazyhouse -fcp "./stockfish" -firstOptions "Skill Level=-5,Slow Mover=10,Use NNUE=false" -fn "Stockfish Hard" -scp "make run" -tc 5 -inc 2 -autoCallFlag true -mg 4 -sgf partide.txt -reuseSecond false 
@@ -232,31 +232,39 @@ maria@spectrum:~/proiect-pa-2023-exploding-pengwins.git/src$ make clean
 
 *  `Evaluate.cpp`, `Evaluate.h`:
 
-   &rarr; The meat of the project: the 2 evaluate methods, plus some important helpers for them, such as `pawnControl()`, `bishopControl()` and `rookControl()`, used for scanarios such as controling the center of the table, for the pawns, or optimal positions for the other pieces.
+   &rarr; The meat of the project: the 2 evaluate methods, plus some important helpers for them, such as `pawnControl()`, `bishopControl()` and `rookControl()`, used for scenarios such as controlling the center of the table, for the pawns, or optimal positions for the other pieces.
 
 ## Algorithmic Approach
 
 The main algorithms used for this stage are placed in the `Evaluate.cpp` source and they are the most important aspect when thinking of an efficient Chess player:
 
-1. `checkFileIsolated()`:
+1. `checkFileIsolated()`: Searches file for existence of other pawns (in order to determine if a pawn is isolated or not).
 
-1. `evaluateBasic()`, `evaluateEarly()`, `evaluateLate()`:
+1. `evaluateBasic()`, `evaluateEarly()`, `evaluateLate()`: All three of these functions calculate the score based on a board configuration as follows:
 
-1. `pawnControl()`:
+   1. `evaluateBasic()` is used in both early and late game evaluation, and consists of heuristics such as: material, mobility, castling, isolated pawns;
 
-1. `bishopControl()`:
+   1. `evaluateEarly()` checks for additional heuristics: centre squares control (by pawns, rooks, knights and bishops), pawn position;
 
-1. `rookControl()`:
+   1. `evaluateLate()` makes use of the basic heuristics, as well as: king check, optimal pawn formations;
 
-1. `knightsEarly()`:
+1. `pawnControl()`: Verifies that pawns have control over centre squares and are defended by other pawns.
 
-1. `checkKingAttacked()`:
+1. `bishopControl()`: Verifies that bishops are developed and have control over centre squares.
 
-1. `checkPawnShield()`:
+1. `rookControl()`: Verifies that rooks are developed and have control over centre squares.
+
+1. `knightsEarly()`: Verifies that knights are developed and have control over centre squares.
+
+1. `checkKingAttacked()`: Verifies whether king is in check.
+
+1. `checkPawnShield()`: Verifies whether king is defended by a pawn formation.
 
 ## Bibliography
 
 [MiniMax Lab](https://ocw.cs.pub.ro/courses/pa/laboratoare/laborator-05)
+
+[Claude E. Shannon's "Programming a Computer for Playing Chess"](https://vision.unipv.it/IA1/ProgrammingaComputerforPlayingChess.pdf)
 
 ## Members and Their Work
 
@@ -266,7 +274,7 @@ Alexandru Mihai, _the "let Ofast do its magic" believer_
 
 &rarr; Alpha-beta pruning algorithm
 
-&rarr; euristics
+&rarr; heuristics
 
 Delia Constantinescu, _the "but depth=5 doesn't get blocked for me" person_
 
@@ -274,7 +282,7 @@ Delia Constantinescu, _the "but depth=5 doesn't get blocked for me" person_
 
 &rarr; Alpha-beta pruning algorithm
 
-&rarr; euristics
+&rarr; heuristics
 
 Ecaterina Mincă, _the competition spy_
 
